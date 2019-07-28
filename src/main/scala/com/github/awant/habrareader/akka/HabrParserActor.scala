@@ -6,18 +6,15 @@ import scala.concurrent.Future
 import akka.actor.{Actor, ActorLogging}
 import akka.event.LoggingReceive
 import akka.pattern.pipe
+import com.github.awant.habrareader.{HabraPost, RssParser}
 
 case class HabrParserConfig(updateDuration: FiniteDuration)
 
 class HabrParserActor(config: HabrParserConfig) extends Actor with ActorLogging {
 
-	private type HabrArticle = Object // todo make real type
-
 	private case object WantUpdate
 
-	private case class ArticleAdded(t: HabrArticle)
-
-	private case class ArticleUpdated(t: HabrArticle)
+	private case class AddArticles(articles: Seq[HabraPost])
 
 	override def preStart(): Unit = {
 		self ! WantUpdate
@@ -27,19 +24,18 @@ class HabrParserActor(config: HabrParserConfig) extends Actor with ActorLogging 
 		case WantUpdate =>
 			log.debug("WantUpdate received!")
 			val future = checkHabrForUpdates()
-			future.map(article => ArticleAdded(article)) pipeTo self
+			future pipeTo self
 			future.failed.foreach(ex => log.error(s"$ex"))
 			scheduleUpdate()
-		case ArticleAdded(article) =>
-			??? // todo
-		case ArticleUpdated(article) =>
+		case AddArticles(articles) =>
 			??? // todo
 	}
 
-	private def checkHabrForUpdates(): Future[HabrArticle] =
+	private def checkHabrForUpdates(): Future[AddArticles] =
 		Future {
-			Thread.sleep(2000)
-			throw new RuntimeException("habr checking isn't implemented yet")
+			AddArticles {
+				RssParser.loadPosts("https://habr.com/ru/rss/all/all/")
+			}
 		}
 
 	private def scheduleUpdate(): Unit =
