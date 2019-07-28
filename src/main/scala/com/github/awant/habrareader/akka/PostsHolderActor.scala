@@ -2,7 +2,7 @@ package com.github.awant.habrareader.akka
 
 import akka.actor.{Actor, ActorLogging}
 import com.github.awant.habrareader.HabraPost
-import com.github.awant.habrareader.akka.PostsHolderActor.{AddPost, GetPost, GetPosts, UpdatePost}
+import com.github.awant.habrareader.akka.PostsHolderActor.{AddPost, GetPost, GetPosts, SaveOnDisk, UpdatePost}
 
 import scala.collection.mutable
 
@@ -37,5 +37,7 @@ class PostsHolderActor() extends Actor with ActorLogging {
 			allPosts.get(id)
 		case GetPosts(predicate) =>
 			allPosts.values.filter(predicate)
+		case SaveOnDisk =>
+			??? // todo
 	}
 }
