@@ -1,12 +1,13 @@
 package com.github.awant.habrareader
 
+import java.util.Date
+
 
 case class HabraPost(id: Int,
                      link: String,
                      title: String,
                      description: String,
                      author: String,
-                     categories: Set[String])
-
-// todo add date
-// todo add full text
+                     date: Date,
+                     categories: Set[String],
+                     fullText: Option[String])
