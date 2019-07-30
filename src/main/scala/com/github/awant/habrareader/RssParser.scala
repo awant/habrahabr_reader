@@ -11,35 +11,35 @@ import scala.xml.XML
 
 object RssParser {
 
-	/** may block thread or throw exceptions */
-	def loadPosts(url: String): Seq[HabraPost] = parse(getTextFromUrl(url))
+  /** may block thread or throw exceptions */
+  def loadPosts(url: String): Seq[HabraPost] = parse(getTextFromUrl(url))
 
-	def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
+  def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
 
-	def parse(text: String): Seq[HabraPost] = {
-		val root = XML.loadString(text)
+  def parse(text: String): Seq[HabraPost] = {
+    val root = XML.loadString(text)
 
-		val items = root \ "channel" \ "item"
+    val items = root \ "channel" \ "item"
 
-		items.toList.map { item =>
-			val link = (item \ "guid").text
+    items.toList.map { item =>
+      val link = (item \ "guid").text
 
-			HabraPost(
-				id = link.filter(_.isDigit).toInt,
-				link = link,
-				title = (item \ "title").text,
-				description = (item \ "description").text,
-				date = parseDate((item \ "pubDate").text),
-				author = (item \ "creator").text,
-				categories = (item \ "category").map(_.text).toSet,
-				fullText = None
-			)
-		}
-	}
+      HabraPost(
+        id = link.filter(_.isDigit).toInt,
+        link = link,
+        title = (item \ "title").text,
+        description = (item \ "description").text,
+        date = parseDate((item \ "pubDate").text),
+        author = (item \ "creator").text,
+        categories = (item \ "category").map(_.text).toSet,
+        fullText = None
+      )
+    }
+  }
 
-	def parseDate(s: String): Date = dateFormat.parse(s)
+  def parseDate(s: String): Date = dateFormat.parse(s)
 
-	private val dateFormat = new SimpleDateFormat("EEE, dd MMM yyy HH:mm:ss 'GMT'", Locale.ENGLISH) {
-		setTimeZone(TimeZone.getTimeZone("GMT"))
-	}
+  private val dateFormat = new SimpleDateFormat("EEE, dd MMM yyy HH:mm:ss 'GMT'", Locale.ENGLISH) {
+    setTimeZone(TimeZone.getTimeZone("GMT"))
+  }
 }
