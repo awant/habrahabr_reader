@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Все публикации подряд</title>
+    <link>https://habr.com/ru/all/all/</link>
+    <description><![CDATA[Все публикации подряд на Хабре]]></description>
+    <language>ru</language>
+    <managingEditor>editor@habr.com</managingEditor>
+    <generator>habr.com</generator>
+    <pubDate>Sun, 28 Jul 2019 13:23:13 GMT</pubDate>
+    <lastBuildDate/>
+      <image>
+        <link>https://habr.com/ru/</link>
+        <url>https://habr.com/images/logo.png</url>
+        <title>Хабр</title>
+      </image>
+
+          
+
+    <item>
+      <title><![CDATA[[Из песочницы] Теория успешного стартапа]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461617/</guid>
+      <link>https://habr.com/ru/post/461617/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461617</link>
+      <description><![CDATA[День добрый, Хабр! <br/>
+<br/>
+Напишу базис для любого стартапа.<br/>
+<br/>
+Перед запуском стартапа вы должны ответить на следующие вопросы.<br/>
+<br/>
+<h4>Что является успехом для вас?</h4><br/>
+Вы планируете:<br/>
+<br/>
+<ul>
+<li>Выйти на IPO</li>
+<li>Продать свой стартап </li>
+<li>Создать семейный бизнес и оставить потомкам </li>
+<li>И т.д. </li>
+</ul><br/>
+Представьте, что вы участник марафонского забега в 30 км и вы значете, что вам нужно пробежать в течении дня, но вам не сказали где финиш… примерно так и стартует каждый второй стартап — они знают, что смогут пробежать, но не представляют куда бегут или где должны остановиться. Поставьте перед собой четкую цель, к которому вы побежите после старта.<br/>
+ <a href="https://habr.com/ru/post/461617/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461617#habracut">Читать дальше &rarr;</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 12:58:08 GMT</pubDate>
+      <dc:creator>TimurBidzhiev</dc:creator>
+      <category><![CDATA[Управление проектами]]></category><category><![CDATA[Развитие стартапа]]></category><category><![CDATA[Бизнес-модели]]></category>
+      <category>стартапы</category><category>проекты</category><category>бизнес</category><category>обучение</category>
+    </item>
+
+
+
+
+
+      <item>
+      <title><![CDATA[Вот зачем нужна школьная алгебра]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/456156/</guid>
+      <link>https://habr.com/ru/post/456156/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=456156</link>
+      <description><![CDATA[Обычно на вопрос «зачем нужна математика?» отвечают что-то вроде «гимнастика для ума». На мой взгляд, этого объяснения недостаточно. Когда человек выполняет физические упражнения, то он знает точное название групп мышц, которые при этом развиваются. Но разговоры про математику остаются слишком абстрактными. Какие конкретно «мышцы ума» тренируются школьной алгеброй? Она ведь совсем не похожа на настоящую математику, в которой делаются великие открытия. Что дает умение искать производную каких-то запутанных функций?<br>
+Преподавание программирования слабым студентам привело меня к более точному ответу на вопрос «зачем?». В статье я постараюсь донести его вам.<br>
+<img src="https://habrastorage.org/webt/kg/cr/nd/kgcrndj0jkejwnqmowpdwmjpd8q.jpeg"><br>
+<br> <a href="https://habr.com/ru/post/456156/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=456156#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 12:10:54 GMT</pubDate>
+      <dc:creator>akryukov</dc:creator>
+      <category><![CDATA[Учебный процесс в IT]]></category>
+      <category><![CDATA[Математика]]></category><category><![CDATA[математика и программирование]]></category><category><![CDATA[школьное образование]]></category><category><![CDATA[математика и реальная жизнь]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Исследование саморазряда аккумуляторов]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461613/</guid>
+      <link>https://habr.com/ru/post/461613/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461613</link>
+      <description><![CDATA[В прошлой <a href="https://habr.com/ru/post/459638/">статья</a> кратко рассказал как создаю глобальную <a href="https://telnov.wiki/">базу знаний</a> по аккумуляторам.<br>
+<br>
+Начинаю новую фазу исследований, посвященную исследованию саморазряда аккумуляторов в процессе хранения.<br>
+<br>
+Аккумуляторы, полностью заряженные, хранились 130 дней. После чего было произведено повторное тестирование.<br> <a href="https://habr.com/ru/post/461613/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461613#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 12:08:57 GMT</pubDate>
+      <dc:creator>Telnov_WIKI</dc:creator>
+      <category><![CDATA[Энергия и элементы питания]]></category>
+      <category><![CDATA[NiMh аккумулятор]]></category><category><![CDATA[батарейки]]></category><category><![CDATA[АА]]></category><category><![CDATA[саморазряд аккумуляторов]]></category>
+    </item>
+
+
+
+
+
+
+
+  
+
+    <item>
+      <title><![CDATA[[Из песочницы] Имплементация кэша на Verilog]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461611/</guid>
+      <link>https://habr.com/ru/post/461611/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461611</link>
+      <description><![CDATA[В данной статье разбор простейшей реализации RAM на языке Verilog.<br/>
+<br/>
+Перед тем, как перейти к разбору кода, рекомендуется изучить базовый синтаксис языка Verilog.<br/>
+<br/>
+<a href="http://www.asic-world.com/verilog/veritut.html">Здесь вы можете найти обучающие материалы</a>.<br/>
+ <a href="https://habr.com/ru/post/461611/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461611#habracut">Читать дальше &rarr;</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 12:06:23 GMT</pubDate>
+      <dc:creator>IlshatFatkhullin</dc:creator>
+      <category><![CDATA[FPGA]]></category>
+      <category>verilog</category><category>hardware</category><category>fpga</category><category>cache</category>
+    </item>
+
+
+
+
+
+  
+
+
+
+    <item>
+      <title><![CDATA[[Перевод] Как работает видеоадаптер Apple Lightning]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461607/</guid>
+      <link>https://habr.com/ru/post/461607/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461607</link>
+      <description><![CDATA[Это мой маленький твиттер-тред о видеоадаптерах Lightning, также известных как Haywire, которые на самом деле являются компьютерами с Apple Secure Boot и ядром Darwin.<br>
+<br>
+<div style="text-align:center;"><img src="https://habrastorage.org/getpro/habr/post_images/368/8c8/e75/3688c8e758a604ca447a98cf2eafb9cc.jpg" width="400"></div><br> <a href="https://habr.com/ru/post/461607/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461607#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 11:51:59 GMT</pubDate>
+      <dc:creator>m1rko</dc:creator>
+      <category><![CDATA[Компьютерное железо]]></category><category><![CDATA[DIY или Сделай сам]]></category><category><![CDATA[Электроника для начинающих]]></category>
+      <category>Lightning</category><category>Haywire</category><category>b137ap</category><category>b165ap</category><category>HDMI</category><category>H9TKNNN2GD</category>
+    </item>
+
+
+
+      <item>
+      <title><![CDATA[От теории к практике: как учатся и работают магистранты факультета Фотоники и оптоинформатики]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461595/</guid>
+      <link>https://habr.com/ru/post/461595/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461595</link>
+      <description><![CDATA[Магистратура — логичный формат продолжения учебы в университете для тех, кто закончил бакалавриат. Однако студентам не всегда понятно, куда идти после выпуска и, самое главное, как перейти от теории к практике — работать и развиваться по специальности — особенно если это не маркетинг или программирование, а, например, фотоника.<br>
+<br>
+Мы пообщались с руководителями лабораторий <a href="http://femtolab.itmo.ru/ru/87803/">Международного института</a> Фотоники и оптоинформатики и выпускниками <a href="https://www.ifmo.ru/ru/viewfaculty/12/fakultet_fotoniki_i_optoinformatiki.htm">факультета Фотоники и оптоинформатики</a>, чтобы узнать, как совмещают работу и учебу, куда можно устроиться по окончании университета (или в процессе обучения), и что интересует их будущих работодателей.<br>
+<br>
+<a href="https://habr.com/ru/company/spbifmo/blog/461595/"><img src="https://habrastorage.org/webt/hf/ft/7v/hfft7vov8jcadgn7iag0ulbj11s.jpeg"></a> <a href="https://habr.com/ru/post/461595/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461595#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 10:34:09 GMT</pubDate>
+      <dc:creator>itmo</dc:creator>
+      <category><![CDATA[Блог компании Университет ИТМО]]></category><category><![CDATA[Учебный процесс в IT]]></category><category><![CDATA[Физика]]></category>
+      <category><![CDATA[Университет ИТМО]]></category><category><![CDATA[вуз]]></category><category><![CDATA[карьера]]></category><category><![CDATA[магистратура]]></category><category><![CDATA[фотоника]]></category><category><![CDATA[оптоинформатика]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Часть 5/2 корп. 1: Перекрёсток проспекта RocketChip и скользкой дорожки инструментации]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461577/</guid>
+      <link>https://habr.com/ru/post/461577/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461577</link>
+      <description><![CDATA[<p>В предыдущих четырёх частях велась подготовка к экспериментам с RISC-V ядром RocketChip, а именно, портирование этого ядра на «нестандартную» для него плату с ПЛИС фирмы Altera (теперь уже Intel). Наконец, в <a href="https://habr.com/ru/post/459470/">прошлой части</a> на этой плате получилось запустить Linux. Знаете, что меня во всём этом забавляло? То, что одновременно приходилось работать с ассемблером RISC-V, C и Scala, и из всех них Scala была самым низкоуровневым языком (потому что именно на ней написан процессор).</p><br>
+<p>Давайте в этой статье сделаем так, чтобы C тоже не было обидно. Более того, если связка Scala+Chisel использовалась лишь как <a href="https://en.wikipedia.org/wiki/Domain-specific_language">domain-specific language</a> для явного описания аппаратуры, то сегодня мы научимся «затягивать» простенькие функции на C в процессор в виде инструкций.</p><br>
+<p>Конечная же цель — тривиальная реализация тривиальных AFL-like инструментаций по аналогии с <a href="https://habr.com/ru/post/452608/">QInst</a>, а реализация отдельностоящих инструкций — лишь побочный продукт.</p> <a href="https://habr.com/ru/post/461577/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461577#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 09:54:56 GMT</pubDate>
+      <dc:creator>atrosinenko</dc:creator>
+      <category><![CDATA[Ненормальное программирование]]></category><category><![CDATA[Open source]]></category><category><![CDATA[Scala]]></category><category><![CDATA[C]]></category><category><![CDATA[FPGA]]></category>
+      <category><![CDATA[risc-v]]></category><category><![CDATA[rocketchip]]></category><category><![CDATA[rocc]]></category><category><![CDATA[инструментация]]></category><category><![CDATA[ebpf]]></category>
+    </item>
+
+
+
+
+
+
+
+  
+
+    <item>
+      <title><![CDATA[[Из песочницы] Что должен знать не технический основатель о разработке ПО]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461601/</guid>
+      <link>https://habr.com/ru/post/461601/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461601</link>
+      <description><![CDATA[Даже самую простую техническую задачу можно реализовать множеством способов. Каждый доступный подход имеет плюсы и минусы, и свою стоимость — можно сделать автоматизацию за копейки, а можно потратить целое состояние.<br/>
+ <br/>
+Обычно инженеры и компании по разработке ПО стремятся реализовать задачу с максимально высоким качеством, на которое они способны. В зависимости от их опыта и текущей стадии стартапа, полученное “высокое” качество может быть не достаточным, идеально соответствующим моменту, или же пустой тратой средств и времени.<br/>
+ <br/>
+Поэтому, чтобы действовать максимально быстро и эффективно, очень важно менять подход к разработке в зависимости от этапа эволюции стартапа.<br/>
+<br/>
+<img src="https://enfors.tech/images/software-development-for-founder.jpg" alt="image"/><br/>
+ <a href="https://habr.com/ru/post/461601/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461601#habracut">Читать дальше &rarr;</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 09:20:32 GMT</pubDate>
+      <dc:creator>enfors</dc:creator>
+      <category><![CDATA[Управление разработкой]]></category><category><![CDATA[Развитие стартапа]]></category>
+      <category>Стартапы</category><category>разработка для стартапов</category><category>управление разработкой</category><category>основателю на заметку</category>
+    </item>
+
+
+
+
+
+      <item>
+      <title><![CDATA[API на F#. Доступ к модулям приложения на основе ролей]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461593/</guid>
+      <link>https://habr.com/ru/post/461593/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461593</link>
+      <description><![CDATA[<p>ASP.NET Core по стандарту предлагает настраивать доступ к api с помощью атрибутов, есть возможность ограничить доступ пользователям с определенным claim, можно определять политики и привязывать к контроллерам, создавая контроллеры для разных ролей<br>
+У этой системы есть минусы, самый большой в том, что смотря на этот атрибут:</p><br>
+<pre><code class="cs">[Authorize(Roles = "Administrator")]
+public class AdministrationController : Controller
+{
+}</code></pre><br>
+<p>Мы не получаем никакой информации о том, какими правами обладает администратор.</p> <a href="https://habr.com/ru/post/461593/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461593#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 06:22:55 GMT</pubDate>
+      <dc:creator>brager17</dc:creator>
+      <category><![CDATA[Программирование]]></category><category><![CDATA[.NET]]></category><category><![CDATA[API]]></category><category><![CDATA[Функциональное программирование]]></category><category><![CDATA[F#]]></category>
+      <category><![CDATA[fsharp]]></category><category><![CDATA[f#]]></category><category><![CDATA[функциональное программирование]]></category><category><![CDATA[suave]]></category><category><![CDATA[ddd]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Как написать музыку, используя ООП]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461403/</guid>
+      <link>https://habr.com/ru/post/461403/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461403</link>
+      <description><![CDATA[Говорим об истории программного инструмента OpenMusic (OM), разбираем особенности его устройства, рассказываем о первых пользователях. Плюс к этому — приводим аналоги.<br>
+<br>
+<a href="https://habr.com/ru/company/audiomania/blog/461403/"><img src="https://habrastorage.org/webt/gt/jk/fw/gtjkfw6g67334o1sjdsoog73ice.jpeg"></a> <a href="https://habr.com/ru/post/461403/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461403#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 05:58:49 GMT</pubDate>
+      <dc:creator>Audioman</dc:creator>
+      <category><![CDATA[Блог компании Аудиомания]]></category><category><![CDATA[Занимательные задачки]]></category><category><![CDATA[Программирование]]></category><category><![CDATA[Звук]]></category>
+      <category><![CDATA[аудиомания]]></category><category><![CDATA[ООП]]></category><category><![CDATA[OpenMusic]]></category><category><![CDATA[музыка и программирование]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Tic Tac Toe: содержание цикла статей]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461589/</guid>
+      <link>https://habr.com/ru/post/461589/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461589</link>
+      <description><![CDATA[<p><a href="https://habr.com/ru/post/456474/">Tic Tac Toe, часть 0: Сравнение Svelte и React</a><br>
+<a href="https://habr.com/ru/post/458752/">Tic Tac Toe, часть 1: Svelte и Canvas 2D</a><br>
+<a href="https://habr.com/ru/post/459630/">Tic Tac Toe, часть 2: Undo/Redo с хранением состояний</a><br>
+<a href="https://habr.com/ru/post/459906/">Tic Tac Toe, часть 3: Undo/Redo с хранением команд</a><br>
+<a href="https://habr.com/ru/post/460621/">Tic Tac Toe, часть 4: Взаимодействие с бэкендом на Flask с помощью HTTP</a><br>
+<a href="https://habr.com/ru/post/460991/">Tic Tac Toe, часть 5: Бэкенд на С++ Boost.Beast, HTTP</a><br>
+<a href="https://habr.com/ru/post/461531/">Tic Tac Toe, часть 6: Flask и Celery/RabbitMQ</a></p><br>
+<p>Оформил содержание цикла статей в таком виде, на одной странице. Дать ссылку в каждой статье на одну страницу с содержанием проще, чем изменять каждую прошлую статью, добавляя ссылку на новую статью.</p> <a href="https://habr.com/ru/post/461589/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461589#habracut"></a>]]></description>
+      
+      <pubDate>Sun, 28 Jul 2019 02:10:35 GMT</pubDate>
+      <dc:creator>nomhoi</dc:creator>
+      <category><![CDATA[Разработка веб-сайтов]]></category><category><![CDATA[Программирование]]></category><category><![CDATA[Проектирование и рефакторинг]]></category>
+      <category><![CDATA[содержание]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Где учат преподавать (не только в пед. институте)]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461211/</guid>
+      <link>https://habr.com/ru/post/461211/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461211</link>
+      <description><![CDATA[<p><strong>Кому будет полезна статья:</strong> <br>
+<br>
+</p><ul>
+<li>студентам, которые решили подзоработать репетиторством</li>
+<li>аспирантам или специалистам, которым выдали семинарскую группу</li>
+<li>старшим братьям\сестрам, когда младшие просят научить программировать (вышивать крестиком, говорить на китайском, анализировать рынки, искать работу)</li>
+</ul><br>
+То есть всем тем, кому нужно учить, объяснять, и кто не знает за что хвататься, как планировать уроки, что рассказывать.<br>
+<br>
+<p><strong>Здесь вы найдете:</strong> ссылки на обучающие курсы и книги по педагогике и об образовании, на материалы о том, где почитать про обучающие цели, о привлечение внимания и упрощение материала.<br>
+</p><br>
+<img src="https://habrastorage.org/webt/0s/tf/cj/0stfcjoj3g7rrds4fn1sblogje0.jpeg" alt="то, как на вас смотрят ученики"><br> <a href="https://habr.com/ru/post/461211/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461211#habracut">Читать дальше...</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 20:31:43 GMT</pubDate>
+      <dc:creator>omalyugina</dc:creator>
+      <category><![CDATA[Учебный процесс в IT]]></category>
+      <category><![CDATA[обучение онлайн]]></category><category><![CDATA[обучение]]></category><category><![CDATA[преподавание]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Python в помощь тестированию структурных продуктов]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461583/</guid>
+      <link>https://habr.com/ru/post/461583/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461583</link>
+      <description><![CDATA[Воодушевлённый рекламой структурных продуктов на <a href="https://habr.com/ru/company/iticapital/blog/461421/">Хабре</a>, адаптировал python-скрипт для их самостоятельного тестирования. Основная идея в том, что подобные продукты предлагают 100% защиту капитала.  А учитывая 10 лет бычьего рынка, исторические показатели подобных продуктов одурманивают безрисковым раем.<br>
+<br>
+Данная статья будет интересна начинающим python-программистам, которые интересуются управлением своим капиталом. Ну а кому-то данный инструмент может пригодиться для самостоятельного построения подобных стратегий. Но будьте аккуратны, брокеры пишут, что это не каждому под силу.<br>
+<br>
+Код выложен в GitHub в виде Jupyter-блокнота. Поехали!<br> <a href="https://habr.com/ru/post/461583/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461583#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 19:56:23 GMT</pubDate>
+      <dc:creator>i0am0raa</dc:creator>
+      <category><![CDATA[Python]]></category><category><![CDATA[Финансы в IT]]></category>
+      <category><![CDATA[python]]></category><category><![CDATA[jupyter]]></category><category><![CDATA[структурные продукты]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[IaaS-дайджест: высокая производительность, хранение данных и новые технологии для ЦОД]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461223/</guid>
+      <link>https://habr.com/ru/post/461223/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461223</link>
+      <description><![CDATA[<h5>Материалы из нашего <a href="https://iaas-blog.it-grad.ru/">блога об IaaS</a> и <a href="https://t.me/iaasblog">Tg-канала</a> про IT-инфраструктуру.</h5><br>
+<a href="https://habr.com/ru/company/it-grad/blog/461223/"><img src="https://habrastorage.org/webt/ne/to/gp/netogpagqgdyack9n8nhccmjc_m.jpeg"></a><br>
+<sup><font color="#A9A9A9"><i>/ фото <a href="https://www.flickr.com/photos/vintage_illustration/46351366241/">NASA, Rawpixel</a> <a href="https://creativecommons.org/licenses/by/2.0/">CC BY</a></i></font></sup><br>
+<br>
+<h2>Аналитические заметки</h2><br>
+<ul>
+<li><b><a href="https://iaas-blog.it-grad.ru/tendencii/vmware-empower-2019-delimsya-vpechatleniyami-i-rasskazyvaem-o-samom-interesnom/">Как прошла конференция VMware EMPOWER 2019</a></b> <img src="https://habrastorage.org/webt/vx/aa/da/vxaadafu0x4rivl_aglzp_nk2pk.png"> Это — саммари о поездке специалистов «ИТ-ГРАД» в Лиссабон, где VMware проводили свою ежегодную тематическую конференцию. Прямую трансляцию с места событий мы вели у себя в <a href="https://t.me/iaasblog">Telegram-канале</a>, а на Хабре публиковали ежедневные отчеты с заметками о представленных новинках и наиболее обсуждаемых технологиях: <a href="https://habr.com/ru/company/it-grad/blog/452840/">день первый</a> (интеллектуальные решения, информационная безопасность, конец эры NSX-V), <a href="https://habr.com/ru/company/it-grad/blog/453096/">день второй</a> (сетевые решения, IoT, МО), <a href="https://habr.com/ru/company/it-grad/blog/453346/">день третий</a> (виртуализация СХД и восстановлении данных). Помимо этого мы подвели итоги и в <a href="https://habr.com/ru/company/it-grad/blog/455351/">хабрапосте</a>.</li>
+</ul> <a href="https://habr.com/ru/post/461223/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461223#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 19:44:39 GMT</pubDate>
+      <dc:creator>it_man</dc:creator>
+      <category><![CDATA[Блог компании ИТ-ГРАД]]></category><category><![CDATA[Высокая производительность]]></category><category><![CDATA[IT-инфраструктура]]></category><category><![CDATA[Серверное администрирование]]></category><category><![CDATA[Хранение данных]]></category>
+      <category><![CDATA[ит-град]]></category><category><![CDATA[дайджест]]></category><category><![CDATA[IaaS]]></category><category><![CDATA[ЦОД]]></category><category><![CDATA[хранение данных]]></category><category><![CDATA[GDPR]]></category><category><![CDATA[процессоры]]></category><category><![CDATA[vGPU]]></category>
+    </item>
+
+
+
+
+
+
+
+  
+
+
+
+    <item>
+      <title><![CDATA[[Перевод] 5 заповедей TypeScript-разработчика]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461565/</guid>
+      <link>https://habr.com/ru/post/461565/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461565</link>
+      <description><![CDATA[<p><img src="https://habrastorage.org/webt/mx/7h/yr/mx7hyrh8ms-5uuolkemexd9jkvo.jpeg" alt="image"></p><br>
+<p>Всё больше и больше проектов и команд используют TypeScript. Однако просто применять TypeScript и выжимать из него максимум пользы — это очень разные вещи.</p><br>
+<p>Представляю вам список высокоуровневых передовых практик использования TypeScript, которые помогут получить максимум преимуществ от применения этого языка.</p> <a href="https://habr.com/ru/post/461565/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461565#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 16:13:55 GMT</pubDate>
+      <dc:creator>bevalorous</dc:creator>
+      <category><![CDATA[Разработка веб-сайтов]]></category><category><![CDATA[Совершенный код]]></category><category><![CDATA[Проектирование и рефакторинг]]></category><category><![CDATA[TypeScript]]></category>
+      <category>typescript</category><category>clean code</category><category>type casting</category><category>type checking</category><category>contracts</category><category>best practices</category>
+    </item>
+
+
+
+      <item>
+      <title><![CDATA[Пост-анализ: что известно о последней атаке на сеть серверов криптоключей SKS Keyserver]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461443/</guid>
+      <link>https://habr.com/ru/post/461443/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461443</link>
+      <description><![CDATA[Хакеры использовали особенность протокола OpenPGP, о которой известно более десяти лет. <br>
+<br>
+Рассказываем, в чем суть и почему её не могут закрыть.<br>
+<br>
+<a href="https://habr.com/ru/company/vasexperts/blog/461443/"><img src="https://habrastorage.org/webt/jz/n6/gq/jzn6gqqnhadmqlkgrkjflbhgqqq.jpeg"></a> <a href="https://habr.com/ru/post/461443/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461443#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 16:12:37 GMT</pubDate>
+      <dc:creator>VASExperts</dc:creator>
+      <category><![CDATA[Блог компании VAS Experts]]></category><category><![CDATA[Информационная безопасность]]></category><category><![CDATA[IT-инфраструктура]]></category><category><![CDATA[Серверное администрирование]]></category>
+      <category><![CDATA[vas experts]]></category><category><![CDATA[OpenPGP]]></category><category><![CDATA[SKS Keyserver]]></category><category><![CDATA[ИБ]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[WebMoney вводит новые кошельки WMP и меняет правила игры]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461579/</guid>
+      <link>https://habr.com/ru/post/461579/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461579</link>
+      <description><![CDATA[<p><img src="https://habrastorage.org/getpro/habr/post_images/702/487/572/7024875723f5cac3789f1bd6c906e3b4.png" alt="image"></p><br>
+<p>10 июля 2019 года пользователи системы WebMoney получили сообщение от системы, которое информирует пользователей об изменении правовой модели работы систем WebMoney Transfer в части имущественных прав WMR.</p><br>
+<p>У многих пользователей возникли вопросы в связи с этой новостью, на форумах обсуждаются скупые ответы службы поддержки системы, в основном содержание которых — рекомендация следить за новостями.</p> <a href="https://habr.com/ru/post/461579/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461579#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 15:58:15 GMT</pubDate>
+      <dc:creator>Akiron</dc:creator>
+      <category><![CDATA[Платежные системы]]></category>
+      <category><![CDATA[webmoney]]></category><category><![CDATA[электронные деньги]]></category>
+    </item>
+
+
+
+
+
+
+
+      <item>
+      <title><![CDATA[Создание облачной АТС 3CX на любом Openstack-совместимом хостинге]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461575/</guid>
+      <link>https://habr.com/ru/post/461575/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461575</link>
+      <description><![CDATA[Зачастую требуется установить АТС 3CX в облаке, но ваш выбранный облачный провайдер не входит в список <a href="https://www.3cx.ru/docs/cloud-pbx-providers/">поддерживаемых</a> 3CX (например, Mail.ru Cloud Solutions). Ничего страшного! Сделать это совсем несложно, нужно только выяснить, поддерживает ли провайдер инфраструктуру Openstack. 3CX, в числе других компаний, <a href="https://www.openstack.org/foundation/companies/">спонсирует</a> развитие Openstack и поддерживает Openstack API и стандартный интерфейс Horizon для мониторинга и управления. <br>
+<br>
+Итак, для установки 3CX вам потребуются:<br>
+<br>
+<ul>
+<li>Облачный провайдер Openstack API Compliant с активированным аккаунтом<br>
+</li>
+<li>Учетные данные доступа к API для сервиса PBX Express, включая Openstack API URL<br>
+</li>
+</ul><br>
+Рассмотрим установку облачной 3CX на примере провайдера Dreamhost. <a href="https://habr.com/ru/post/461575/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461575#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 15:10:26 GMT</pubDate>
+      <dc:creator>snezhko</dc:creator>
+      <category><![CDATA[Блог компании 3CX Ltd.]]></category><category><![CDATA[Системное администрирование]]></category><category><![CDATA[Серверное администрирование]]></category><category><![CDATA[Разработка систем связи]]></category><category><![CDATA[Облачные сервисы]]></category>
+      <category><![CDATA[openstack]]></category><category><![CDATA[dreamhost]]></category><category><![CDATA[3cx]]></category><category><![CDATA[облачная атс]]></category><category><![CDATA[vps]]></category><category><![CDATA[pbx express]]></category><category><![CDATA[виртуальная атс]]></category>
+    </item>
+
+
+
+
+
+
+
+  
+
+    <item>
+      <title><![CDATA[[Из песочницы] Заметка для фронтендеров: что проверить перед тестированием]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461569/</guid>
+      <link>https://habr.com/ru/post/461569/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461569</link>
+      <description><![CDATA[Всем привет!<br/>
+<br/>
+Так сложилось, что я из той самой службы контроля качества. Недавно наша команда писала большую фичу. Немного порефлексировав, решил создать такую вот статью-шпаргалку для фронтендеров. Она напомнит на что стоит обратить внимание перед передачей задачи в тестирование. <a href="https://habr.com/ru/post/461569/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461569#habracut">Читать дальше &rarr;</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 13:46:08 GMT</pubDate>
+      <dc:creator>Ant-VAV</dc:creator>
+      <category><![CDATA[Разработка веб-сайтов]]></category><category><![CDATA[Тестирование веб-сервисов]]></category>
+      <category>вёрстка</category><category>тестирование</category><category>нормально делай нормально будет</category>
+    </item>
+
+
+
+
+
+      <item>
+      <title><![CDATA[Самодельная лазерная установка на парах меди “Lightsaber” – часть 3, заключительная]]></title>
+      <guid isPermaLink="true">https://habr.com/ru/post/461563/</guid>
+      <link>https://habr.com/ru/post/461563/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461563</link>
+      <description><![CDATA[Я решил составить краткую шуточную инструкцию для начинающих некромантов, которые захотят поднимать из мертвых лазеры на парах меди. Виктор Франкенштейн «вдыхал жизнь» в мертвецов, а мы проделаем то же самое с мертвой лазерной трубкой. <br>
+<br>
+<img src="https://habrastorage.org/getpro/habr/post_images/cd4/48e/0fd/cd448e0fdc65507d501f5a76a6871a3b.jpg" alt="image"><br> <a href="https://habr.com/ru/post/461563/?utm_source=habrahabr&amp;utm_medium=rss&amp;utm_campaign=461563#habracut">Читать дальше →</a>]]></description>
+      
+      <pubDate>Sat, 27 Jul 2019 13:04:45 GMT</pubDate>
+      <dc:creator>Laserbuilder</dc:creator>
+      <category><![CDATA[DIY или Сделай сам]]></category><category><![CDATA[Лазеры]]></category>
+      <category><![CDATA[лазер]]></category><category><![CDATA[лазер на парах меди]]></category><category><![CDATA[неон]]></category><category><![CDATA[УЛ-102]]></category><category><![CDATA[лазерная трубка]]></category><category><![CDATA[ремонт]]></category>
+    </item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </channel>
+</rss>
