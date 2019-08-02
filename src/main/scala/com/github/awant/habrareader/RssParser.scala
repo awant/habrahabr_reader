@@ -12,11 +12,11 @@ import scala.xml.XML
 object RssParser {
 
   /** may block thread or throw exceptions */
-  def loadPosts(url: String): Seq[HabraPost] = parse(getTextFromUrl(url))
+  def loadPosts(url: String): Seq[HabrArticle] = parse(getTextFromUrl(url))
 
   def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
 
-  def parse(text: String): Seq[HabraPost] = {
+  def parse(text: String): Seq[HabrArticle] = {
     val root = XML.loadString(text)
 
     val items = root \ "channel" \ "item"
@@ -24,7 +24,7 @@ object RssParser {
     items.toList.map { item =>
       val link = (item \ "guid").text
 
-      HabraPost(
+      HabrArticle(
         id = link.filter(_.isDigit).toInt,
         link = link,
         title = (item \ "title").text,
