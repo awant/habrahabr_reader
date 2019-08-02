@@ -1,18 +1,16 @@
 package com.github.awant.habrareader.akka
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-
-import akka.actor.{ActorSystem, Props}
+import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
+
+import scala.concurrent.duration._
 
 object AkkaSystem extends App {
 
   val akkaConfig = ConfigFactory.load("akka.conf")
   val system = ActorSystem("system", akkaConfig)
 
-  val habrParserActor = system.actorOf(Props(new HabrParserActor(HabrParserConfig(10.seconds))), "habrParser")
-
-  system.scheduler.scheduleOnce(10.seconds)(system.terminate())
-  system.getWhenTerminated
+  val habrParserActor = system.actorOf(HabrParserActor.props(), "habrParser")
+  val habrArticlesCache = system.actorOf(HabrArticlesCache.props(1.minute, habrParserActor), "habrArticlesCache")
+  val naiveSubscriber = system.actorOf(NaiveSubscriber.props(habrArticlesCache), "naiveSubscriber")
 }
