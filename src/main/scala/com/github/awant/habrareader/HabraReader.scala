@@ -1,5 +1,6 @@
 package com.github.awant.habrareader
 
+import java.net.{InetSocketAddress, Proxy}
 import com.typesafe.config.ConfigFactory
 import scala.concurrent.Await
 import scala.concurrent.duration._
