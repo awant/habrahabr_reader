@@ -3,22 +3,16 @@ package com.github.awant.habrareader
 import java.io.File
 import java.util.{Calendar, Date, TimeZone}
 
+import com.github.awant.habrareader.Implicits._
 import org.scalatest.FunSuite
 
-import scala.io.Source
-import com.github.awant.habrareader.Implicits._
+class HabrParserTest extends FunSuite {
 
-class RssParserTest extends FunSuite {
-
-  test("testParse") {
+  test("testRssParse") {
     val file = new File(getClass.getClassLoader.getResource("exampleOfHabrRss.xml").getFile)
 
     assert(file.exists())
-
-    val text = Source.fromFile(file).use {
-      _.getLines().mkString("\n")
-    }
-    val result = RssParser.parse(text)
+    val result = HabrParser.parseRss(file.text)
 
     assert(result.nonEmpty)
 
@@ -37,7 +31,7 @@ class RssParserTest extends FunSuite {
 
   test("parseDate") {
     val string = "Sun, 28 Jul 2019 13:23:13 GMT"
-    val date = RssParser.parseDate(string)
+    val date = HabrParser.parseDate(string)
     val c = Calendar.getInstance(TimeZone.getTimeZone("GMT"))
     c.setTime(date)
 
@@ -47,5 +41,21 @@ class RssParserTest extends FunSuite {
     assert(c.get(Calendar.HOUR_OF_DAY) == 13)
     assert(c.get(Calendar.MINUTE) == 23)
     assert(c.get(Calendar.SECOND) == 13)
+  }
+
+  test("testHtmlParse") {
+    val file = new File(getClass.getClassLoader.getResource("habr_en.html").getFile)
+    val article = HabrParser.parseHtml(file.text)
+
+    assert(article.id == 462783)
+    assert(article.link == "https://habr.com/ru/company/parallels/blog/462783/")
+    assert(article.author == "Дмитрий Смиркин")
+    assert(article.title == "Матрица: 20 лет спустя")
+    assert(article.categories == Set("parallels", "martix", "history", "movie"))
+    assert(article.description == "В этом году фанаты научной фантастики отмечают 20-летие с даты премьеры трилогии «Матрица». Кстати, вы знали, что в США фильм увидели в марте, а до нас он доехал лишь в октябре 1999 года? На...")
+    assert(article.fullText.exists(_.size > 1000))
+    assert(article.rating == Option(ArticleRating(43, 36)))
+
+    // todo add comments
   }
 }

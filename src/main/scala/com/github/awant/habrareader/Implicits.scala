@@ -22,8 +22,8 @@ object Implicits {
   }
 
   implicit class FileExt(private val file: File) extends AnyVal {
-    def text: Array[String] = Source.fromFile(file).use {
-      _.getLines().toArray
+    def text: String = Source.fromFile(file).use {
+      _.getLines().mkString("\n")
     }
 
     def text_=(newText: String): Unit = {

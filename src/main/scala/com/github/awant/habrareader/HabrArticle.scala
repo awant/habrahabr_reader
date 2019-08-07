@@ -9,6 +9,8 @@ object HabrArticle {
   type Id = Int
 }
 
+case class ArticleRating(upvotes: Int, downvotes: Int)
+
 case class HabrArticle(id: Id,
                        link: String,
                        title: String,
@@ -16,4 +18,5 @@ case class HabrArticle(id: Id,
                        author: String,
                        date: Date,
                        categories: Set[String],
-                       fullText: Option[String])
+                       fullText: Option[String],
+                       rating: Option[ArticleRating])
