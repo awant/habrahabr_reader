@@ -56,4 +56,14 @@ class HabrParserTest extends FunSuite {
     assert(article.fullText.exists(_.size > 1000))
     assert(article.rating.contains(ArticleStatistics(43, 36, 27300, 115, 37)))
   }
+
+  test("combine ArticleStatistics") {
+    import cats.syntax.semigroup._
+
+    val first = ArticleStatistics(1, 2, 3, 40, 50)
+    val second = ArticleStatistics(100, 10, 1, 30, 22)
+
+    val result = first |+| second
+    assert(result == ArticleStatistics(100, 10, 3, 40, 50))
+  }
 }
