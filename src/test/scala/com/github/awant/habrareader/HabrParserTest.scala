@@ -22,7 +22,7 @@ class HabrParserTest extends FunSuite {
     assert(first.link == "https://habr.com/ru/post/461617/")
     assert(first.description.startsWith("День добрый, Хабр! <br/>"))
     assert(first.author == "TimurBidzhiev")
-    assert(first.date.before(new Date()))
+    assert(first.date.exists(_.before(new Date())))
     assert(first.categories.contains("Управление проектами"))
     assert(first.categories.contains("обучение"))
     assert(first.categories.contains("стартапы"))
@@ -49,13 +49,11 @@ class HabrParserTest extends FunSuite {
 
     assert(article.id == 462783)
     assert(article.link == "https://habr.com/ru/company/parallels/blog/462783/")
-    assert(article.author == "Дмитрий Смиркин")
+    assert(article.author == "SmirkinDA")
     assert(article.title == "Матрица: 20 лет спустя")
     assert(article.categories == Set("parallels", "martix", "history", "movie"))
     assert(article.description == "В этом году фанаты научной фантастики отмечают 20-летие с даты премьеры трилогии «Матрица». Кстати, вы знали, что в США фильм увидели в марте, а до нас он доехал лишь в октябре 1999 года? На...")
     assert(article.fullText.exists(_.size > 1000))
-    assert(article.rating == Option(ArticleRating(43, 36)))
-
-    // todo add comments
+    assert(article.rating.contains(ArticleStatistics(43, 36, 27300, 115, 37)))
   }
 }

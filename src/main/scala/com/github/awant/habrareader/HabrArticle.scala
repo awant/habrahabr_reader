@@ -9,14 +9,26 @@ object HabrArticle {
   type Id = Int
 }
 
-case class ArticleRating(upvotes: Int, downvotes: Int)
+case class ArticleStatistics(upVotes: Int,
+                             downVotes: Int,
+                             viewsCount: Int,
+                             commentsCount: Int,
+                             bookmarksCount: Int) {
+  def totalVotes: Int = upVotes - downVotes
+}
 
 case class HabrArticle(id: Id,
                        link: String,
                        title: String,
                        description: String,
                        author: String,
-                       date: Date,
+                       date: Option[Date],
                        categories: Set[String],
                        fullText: Option[String],
-                       rating: Option[ArticleRating])
+                       rating: Option[ArticleStatistics]) {
+
+  def merge(anotherVersion: HabrArticle): HabrArticle = {
+    assert(id == anotherVersion.id)
+    ??? // todo
+  }
+}

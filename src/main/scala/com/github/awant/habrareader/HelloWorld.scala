@@ -1,7 +1,6 @@
 package com.github.awant.habrareader
 
 import com.typesafe.config.ConfigFactory
-
 import pureconfig.generic.auto._
 
 case class HelloConfig(version: String)

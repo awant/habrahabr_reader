@@ -5,6 +5,10 @@ import java.util.{Date, Locale, TimeZone}
 
 import com.github.awant.habrareader.Implicits._
 
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
+import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
+import net.ruippeixotog.scalascraper.dsl.DSL._
+
 import scala.io.Source
 import scala.xml.XML
 
@@ -29,7 +33,7 @@ object HabrParser {
         link = link,
         title = (item \ "title").text,
         description = (item \ "description").text,
-        date = parseDate((item \ "pubDate").text),
+        date = Option(parseDate((item \ "pubDate").text)),
         author = (item \ "creator").text,
         categories = (item \ "category").map(_.text).toSet,
         fullText = None,
@@ -38,8 +42,68 @@ object HabrParser {
     }
   }
 
-  def parseHtml(text: String): HabrArticle = {
-    ???
+  def parseHtml(htmlText: String): HabrArticle = {
+    val browser = JsoupBrowser()
+    val doc = browser.parseString(htmlText)
+
+    val metaAttributes = (doc.head >> elementList("meta")).map(_.attrs)
+
+    val description: String = metaAttributes.find { attrs =>
+      attrs.get("name").contains("description") && attrs.contains("content")
+    }.map(_ ("content")).get.trim
+
+    val categories: Set[String] = metaAttributes.find { attrs =>
+      attrs.get("name").contains("keywords") && attrs.contains("content")
+    }.map(_ ("content")).get.split(", ").toSet
+
+    val link: String = metaAttributes.find { attrs =>
+      attrs.get("property").contains("og:url")
+    }.map(_ ("content")).get
+
+    val id: Int = link.split("/").filter(_.nonEmpty).last.toInt
+    val author: String = doc >> text(".post__meta .user-info__nickname")
+
+    val views: Int = {
+      val s: String = doc >> text(".post-stats__views")
+      if (s.endsWith("k")) {
+        (s.substring(0, s.size - 1).toDouble * 1000).toInt
+      } else {
+        s.toInt
+      }
+    }
+
+    val commentsCount = doc >> text(".post-stats__comments-count")
+    val addedToBookmarks = doc >> text(".bookmark__counter")
+
+    val rating = {
+      val string = (doc >> element(".voting-wjt__counter")).attr("title")
+      // Total rating 79: ↑43 and ↓36
+      val arr = string.split(Array('↑', '↓')).map(s => s.filter(_.isDigit).toInt)
+      val upvotes = arr(1)
+      val downvotes = arr(2)
+      ArticleStatistics(
+        upVotes = upvotes,
+        downVotes = downvotes,
+        viewsCount = views,
+        commentsCount = commentsCount.toInt,
+        bookmarksCount = addedToBookmarks.toInt
+      )
+    }
+
+    val title = doc >> text(".post__title-text")
+    val fullText = doc >> text(".post_full")
+
+    HabrArticle(
+      id = id,
+      link = link,
+      title = title,
+      description = description,
+      author = author,
+      date = None,
+      categories = categories,
+      fullText = Option(fullText),
+      rating = Option(rating),
+    )
   }
 
   def parseDate(s: String): Date = dateFormat.parse(s)
