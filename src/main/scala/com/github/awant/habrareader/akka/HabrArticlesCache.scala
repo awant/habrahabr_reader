@@ -3,14 +3,15 @@ package com.github.awant.habrareader.akka
 import akka.actor.{Actor, ActorRef, Props}
 import cats.syntax.semigroup._
 import com.github.awant.habrareader.HabrArticle
+import com.github.awant.habrareader.utils.UniqueQueue
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 object HabrArticlesCache {
-  def props(updateTime: FiniteDuration, habraParser: ActorRef): Props =
-    Props(new HabrArticlesCache(updateTime, habraParser))
+  def props(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habraParser: ActorRef): Props =
+    Props(new HabrArticlesCache(updateRssInterval, updateCacheInterval, habraParser))
 
   case class Subscribe(subscriber: ActorRef, recieveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
 
@@ -18,7 +19,9 @@ object HabrArticlesCache {
 
   case class PostAdded(article: HabrArticle)
 
-  private case object RequestUpdate
+  private case object RequestUpdateRss
+
+  private case object RequestUpdateCache
 
 }
 
@@ -27,23 +30,32 @@ object HabrArticlesCache {
   * saves articles
   * notifies actors subscribed to this about updates
   *
-  * @param updateTime      : time between rss udates
-  * @param habrParserActor : actor parsing rss
+  * @param updateRssInterval : time between rss udates
+  * @param habrParserActor   : actor parsing rss
   */
-class HabrArticlesCache private(updateTime: FiniteDuration, habrParserActor: ActorRef) extends Actor {
+class HabrArticlesCache private(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habrParserActor: ActorRef) extends Actor {
 
   import HabrArticlesCache._
 
   val cachedArticles: mutable.Map[HabrArticle.Id, HabrArticle] = new mutable.HashMap()
   val newPostSubscribers = new mutable.HashSet[ActorRef]()
   val updatedPostSubscribers = new mutable.HashSet[ActorRef]()
+  val queuedForUpdate = new UniqueQueue[HabrArticle]
 
-  override def preStart(): Unit =
-    context.system.scheduler.schedule(0.second, updateTime, self, RequestUpdate)
+  override def preStart(): Unit = {
+    context.system.scheduler.schedule(0.second, updateRssInterval, self, RequestUpdateRss)
+    context.system.scheduler.schedule(0.second, updateCacheInterval, self, RequestUpdateCache)
+  }
 
   override def receive: Receive = {
-    case RequestUpdate =>
+    case RequestUpdateRss =>
       habrParserActor ! HabrParserActor.RequestRss
+    case RequestUpdateCache =>
+      chooseArticleForUpdate().foreach { article =>
+        habrParserActor ! HabrParserActor.RequestHtml(article.link)
+      }
+    case HabrParserActor.ParsedHtml(article) =>
+      self ! article
     case HabrParserActor.ParsedRss(habraPosts) =>
       habraPosts.foreach(self ! _)
     case article: HabrArticle =>
@@ -69,6 +81,7 @@ class HabrArticlesCache private(updateTime: FiniteDuration, habrParserActor: Act
 
   private def add(article: HabrArticle): Unit = {
     cachedArticles(article.id) = article
+    queuedForUpdate.enqueue(article)
     val msg = PostAdded(article)
     newPostSubscribers.foreach(_ ! msg)
   }
@@ -77,5 +90,12 @@ class HabrArticlesCache private(updateTime: FiniteDuration, habrParserActor: Act
     cachedArticles(article.id) = article
     val msg = PostUpdated(article)
     updatedPostSubscribers.foreach(_ ! msg)
+  }
+
+  private def chooseArticleForUpdate(): Option[HabrArticle] = {
+    if (queuedForUpdate.isEmpty) {
+      cachedArticles.values.foreach(queuedForUpdate.enqueue)
+    }
+    queuedForUpdate.dequeue()
   }
 }

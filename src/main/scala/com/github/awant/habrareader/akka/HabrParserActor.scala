@@ -16,6 +16,10 @@ object HabrParserActor {
 
   case class ParsedRss(articles: Seq[HabrArticle])
 
+  case class RequestHtml(link: String)
+
+  case class ParsedHtml(article: HabrArticle)
+
 }
 
 /**
@@ -27,10 +31,21 @@ class HabrParserActor private() extends Actor with ActorLogging {
 
   override def receive = LoggingReceive {
     case RequestRss =>
-      val future = Future {
+      processAndSendBack {
         ParsedRss(HabrParser.loadPosts("https://habr.com/ru/rss/all/all/"))
       }
-      future pipeTo sender
-      future.failed.foreach(ex => log.error(s"$ex"))
+    case RequestHtml(link) =>
+      processAndSendBack {
+        ParsedHtml(HabrParser.loadHtml(link))
+      }
+  }
+
+  private def processAndSendBack[T](body: => T) {
+    val future = Future(body)
+    future pipeTo sender
+    future.failed.foreach { ex =>
+      log.error(s"$ex")
+      ex.printStackTrace()
+    }
   }
 }
