@@ -9,4 +9,6 @@ libraryDependencies ++= Seq(
   "com.github.pureconfig" %% "pureconfig" % "0.11.1",
   "com.typesafe.akka" %% "akka-actor" % "2.5.23",
   "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
+  "net.ruippeixotog" %% "scala-scraper" % "2.1.0", // html parsing
+  "org.typelevel" %% "cats-core" % "2.0.0-M1" // cats fp
 )

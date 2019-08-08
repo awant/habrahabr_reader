@@ -1,6 +1,7 @@
 package com.github.awant.habrareader.akka
 
 import akka.actor.{Actor, ActorRef, Props}
+import cats.syntax.semigroup._
 import com.github.awant.habrareader.HabrArticle
 
 import scala.collection.mutable
@@ -26,8 +27,8 @@ object HabrArticlesCache {
   * saves articles
   * notifies actors subscribed to this about updates
   *
-  * @param updateTime: time between rss udates
-  * @param habrParserActor: actor parsing rss
+  * @param updateTime      : time between rss udates
+  * @param habrParserActor : actor parsing rss
   */
 class HabrArticlesCache private(updateTime: FiniteDuration, habrParserActor: ActorRef) extends Actor {
 
@@ -49,7 +50,7 @@ class HabrArticlesCache private(updateTime: FiniteDuration, habrParserActor: Act
       cachedArticles.get(article.id) match {
         case None => add(article)
         case Some(oldArticle) => if (article != oldArticle) {
-          update(article)
+          update(oldArticle |+| article)
         }
       }
     case Subscribe(subscriber, receiveNewPosts, receiveUpdates, receiveExistingPosts) =>
