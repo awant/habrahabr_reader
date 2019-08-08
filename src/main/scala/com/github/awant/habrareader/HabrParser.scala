@@ -4,12 +4,12 @@ import java.text.SimpleDateFormat
 import java.util.{Date, Locale, TimeZone}
 
 import com.github.awant.habrareader.Implicits._
-
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 import scala.io.Source
+import scala.util.Try
 import scala.xml.XML
 
 
@@ -17,6 +17,9 @@ object HabrParser {
 
   /** may block thread or throw exceptions */
   def loadPosts(url: String): Seq[HabrArticle] = parseRss(getTextFromUrl(url))
+
+  /** may block thread or throw exceptions */
+  def loadHtml(url: String): HabrArticle = parseHtml(getTextFromUrl(url))
 
   def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
 
@@ -66,13 +69,17 @@ object HabrParser {
     val views: Int = {
       val s: String = doc >> text(".post-stats__views")
       if (s.endsWith("k")) {
-        (s.substring(0, s.size - 1).toDouble * 1000).toInt
+        (s.replace(',', '.').substring(0, s.size - 1).toDouble * 1000).toInt
       } else {
         s.toInt
       }
     }
 
-    val commentsCount = doc >> text(".post-stats__comments-count")
+    val commentsCount = Try {
+      (doc >> text(".post-stats__comments-count")).toInt
+      // isn't exist if no comments
+    }.getOrElse(0)
+
     val addedToBookmarks = doc >> text(".bookmark__counter")
 
     val rating = {
@@ -85,7 +92,7 @@ object HabrParser {
         upVotes = upvotes,
         downVotes = downvotes,
         viewsCount = views,
-        commentsCount = commentsCount.toInt,
+        commentsCount = commentsCount,
         bookmarksCount = addedToBookmarks.toInt
       )
     }

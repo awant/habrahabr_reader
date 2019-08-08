@@ -16,6 +16,8 @@ case class HabrArticle(id: Id,
                        categories: Set[String],
                        fullText: Option[String],
                        rating: Option[ArticleStatistics]) {
+
+  override def hashCode(): Int = id
 }
 
 object HabrArticle {
