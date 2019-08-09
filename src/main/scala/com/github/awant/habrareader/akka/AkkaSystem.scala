@@ -11,6 +11,6 @@ object AkkaSystem extends App {
   val system = ActorSystem("system", akkaConfig)
 
   val habrParserActor = system.actorOf(HabrParserActor.props(), "habrParser")
-  val habrArticlesCache = system.actorOf(HabrArticlesCache.props(1.minute, habrParserActor), "habrArticlesCache")
+  val habrArticlesCache = system.actorOf(HabrArticlesCache.props(1.minute, 10.seconds, habrParserActor), "habrArticlesCache")
   val naiveSubscriber = system.actorOf(NaiveSubscriber.props(habrArticlesCache), "naiveSubscriber")
 }
