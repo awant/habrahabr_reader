@@ -4,6 +4,7 @@ import java.io.File
 import java.util.{Calendar, Date, TimeZone}
 
 import com.github.awant.habrareader.Implicits._
+import com.github.awant.habrareader.habr.{ArticleStatistics, HabrParser}
 import org.scalatest.FunSuite
 
 class HabrParserTest extends FunSuite {

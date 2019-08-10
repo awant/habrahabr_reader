@@ -3,7 +3,7 @@ package com.github.awant.habrareader.akka
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.LoggingReceive
 import akka.pattern.pipe
-import com.github.awant.habrareader.{HabrArticle, HabrParser}
+import com.github.awant.habrareader.habr.{HabrArticle, HabrParser}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

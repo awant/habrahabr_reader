@@ -1,5 +1,6 @@
 package com.github.awant.habrareader
 
+import com.github.awant.habrareader.habr.HabrParser
 import com.typesafe.config.ConfigFactory
 import pureconfig.generic.auto._
 

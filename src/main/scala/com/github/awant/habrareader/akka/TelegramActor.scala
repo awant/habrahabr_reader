@@ -6,7 +6,6 @@ import com.github.awant.habrareader.akka.TelegramBotActor.SendMessage
 object TelegramBotActor {
 
   case class SendMessage(msg: String, recipient: String)
-
 }
 
 case class TelegramBotConfig(token: String)

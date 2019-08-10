@@ -2,7 +2,7 @@ package com.github.awant.habrareader.akka
 
 import akka.actor.{Actor, ActorRef, Props}
 import cats.syntax.semigroup._
-import com.github.awant.habrareader.HabrArticle
+import com.github.awant.habrareader.habr.HabrArticle
 import com.github.awant.habrareader.utils.UniqueQueue
 
 import scala.collection.mutable
