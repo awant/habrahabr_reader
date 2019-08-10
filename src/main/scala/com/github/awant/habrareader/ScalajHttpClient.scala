@@ -11,7 +11,6 @@ import com.bot4s.telegram.marshalling
 import io.circe.parser.parse
 import io.circe.{Decoder, Encoder}
 import scalaj.http.{Http, MultiPart}
-import slogging.StrictLogging
 
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
@@ -27,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future, blocking}
   * @param token Bot token
   */
 class ScalajHttpClient(token: String, proxy: Proxy = Proxy.NO_PROXY, telegramHost: String = "api.telegram.org")
-                      (implicit ec: ExecutionContext) extends RequestHandler[Future] with StrictLogging {
+                      (implicit ec: ExecutionContext) extends RequestHandler[Future] {
 
   val connectionTimeoutMs = 50000
   val readTimeoutMs = 50000
@@ -100,11 +99,11 @@ class ScalajHttpClient(token: String, proxy: Proxy = Proxy.NO_PROXY, telegramHos
           .asString
       }
     } map {
-      x =>
-        if (x.isSuccess)
-          marshalling.fromJson[Response[R]](x.body)
+      httpResponse =>
+        if (httpResponse.isSuccess)
+          marshalling.fromJson[Response[R]](httpResponse.body)
         else
-          throw new RuntimeException(s"Error ${x.code} on request")
+          throw new RuntimeException(s"Error ${httpResponse.code} on request")
     } map processApiResponse[R]
   }
 
