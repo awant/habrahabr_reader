@@ -32,5 +32,4 @@ object Implicits {
       bw.close()
     }
   }
-
 }
