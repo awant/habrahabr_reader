@@ -74,7 +74,7 @@ class TgChatActor private(chat: Chat, tgHandler: ActorRef) extends Actor {
       s"""author: *${article.author}*
          |rating: *${r.totalVotes}* = *${r.upVotes}* - *${r.downVotes}*
          |*${r.viewsCount}* views, *${r.bookmarksCount}* bookmarks, *${r.commentsCount}* comments
-         |tags: ${article.categories.map(_.replace(' ', '_').replace('-', '_')).map(t => s"#$t").mkString("{", ", ", "}")}
+         |tags: ${article.categories.map(_.filter(c => c != '.' && c != ' ')).map(t => s"#$t").mkString("{", ", ", "}")}
          |${article.link}
       """.stripMargin)
   }
