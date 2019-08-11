@@ -45,6 +45,6 @@ class TgHandlerActor private(botConfig: BotConfig, cacheBot: ActorRef) extends A
 
   private def createChat(chat: Chat): ActorRef = {
     val name = s"${chat.id}${chat.title.orElse(chat.username).getOrElse("")}"
-    context.actorOf(TgChatActor.props(chat), name)
+    context.actorOf(TgChatActor.props(chat, self), name)
   }
 }

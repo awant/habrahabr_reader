@@ -1,6 +1,6 @@
 package com.github.awant.habrareader.akka
 
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import com.bot4s.telegram.methods.{ParseMode, SendMessage}
 import com.bot4s.telegram.models.{Chat, Message}
 import com.github.awant.habrareader.habr.HabrArticle
@@ -10,10 +10,10 @@ import scala.collection.mutable
 import scala.util.Try
 
 object TgChatActor {
-  def props(chat: Chat) = Props(new TgChatActor(chat))
+  def props(chat: Chat, tgHandler: ActorRef) = Props(new TgChatActor(chat, tgHandler))
 }
 
-class TgChatActor private(chat: Chat) extends Actor {
+class TgChatActor private(chat: Chat, tgHandler: ActorRef) extends Actor {
 
   private object preferences {
     // authors in lowercase
@@ -70,7 +70,7 @@ class TgChatActor private(chat: Chat) extends Actor {
 
   private def showArticle(article: HabrArticle): Unit = {
     val r = article.rating.get
-    sender ! textMessage(
+    tgHandler ! textMessage(
       s"""author: *${article.author}*
          |rating: *${r.totalVotes}* = *${r.upVotes}* - *${r.downVotes}*
          |*${r.viewsCount}* views, *${r.bookmarksCount}* bookmarks, *${r.commentsCount}* comments
@@ -82,7 +82,7 @@ class TgChatActor private(chat: Chat) extends Actor {
   private def handleUserInput(msg: Message): Unit = {
     msg.text.map(_.toLowerCase).foreach { text =>
       if (Set("start", "help").flatMap(s => Set(s, "/" + s)) contains text.trim) {
-        sender ! textMessage(
+        tgHandler ! textMessage(
           s"""Hello, I'm bot for filtering habr articles
              |${getPreferences()}
              |${possibleCommands()}
@@ -91,14 +91,14 @@ class TgChatActor private(chat: Chat) extends Actor {
       }
       text match {
         case "/settings" =>
-          sender ! textMessage(getPreferences())
+          tgHandler ! textMessage(getPreferences())
 
         case "/reset" =>
           preferences.reset()
-          sender ! textMessage(s"preferences was reset to default:\n${getPreferences()}")
+          tgHandler ! textMessage(s"preferences was reset to default:\n${getPreferences()}")
 
         case "/about" =>
-          sender ! textMessage("email: habrahabrreader@gmail.com")
+          tgHandler ! textMessage("email: habrahabrreader@gmail.com")
         // pswd = scalaforever
 
         case ParsedCommand("/ban", name) =>
@@ -119,18 +119,18 @@ class TgChatActor private(chat: Chat) extends Actor {
           Try {
             preferences.ratingThreshold = value.toInt
           }.failed.foreach { ex =>
-            sender ! textMessage("should be an int!")
+            tgHandler ! textMessage("should be an int!")
           }
 
         case ParsedCommand("/setratio", value) =>
           Try {
             preferences.positiveByNegativeRatioThreshold = value.toDouble
           }.failed.foreach { ex =>
-            sender ! textMessage("should be a double!")
+            tgHandler ! textMessage("should be a double!")
           }
 
         case _ =>
-          sender ! textMessage(
+          tgHandler ! textMessage(
             s"""unknown command!
                |${possibleCommands()}
             """.stripMargin)
@@ -140,7 +140,7 @@ class TgChatActor private(chat: Chat) extends Actor {
 
   private def removeOrSendText(author: String, set: mutable.Set[String]): Unit =
     if (!set.contains(author)) {
-      sender ! textMessage(
+      tgHandler ! textMessage(
         s"""author $author wasn't found
            |${makeList("current list:", set.toSeq.sorted)}""".stripMargin)
     } else {
