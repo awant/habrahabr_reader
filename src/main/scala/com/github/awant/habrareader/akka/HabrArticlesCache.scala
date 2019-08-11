@@ -13,7 +13,7 @@ object HabrArticlesCache {
   def props(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habraParser: ActorRef): Props =
     Props(new HabrArticlesCache(updateRssInterval, updateCacheInterval, habraParser))
 
-  case class Subscribe(subscriber: ActorRef, recieveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
+  case class Subscribe(subscriber: ActorRef, receiveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
 
   case class PostUpdated(article: HabrArticle)
 
