@@ -1,13 +1,12 @@
-package com.github.awant.habrareader
+package com.github.awant.habrareader.habr
 
 import java.util.Date
 
 import cats.Semigroup
 import cats.implicits._
 import cats.instances.option._
-import com.github.awant.habrareader.HabrArticle.Id
 
-case class HabrArticle(id: Id,
+case class HabrArticle(id: HabrArticle.Id,
                        link: String,
                        title: String,
                        description: String,

@@ -1,4 +1,4 @@
-package com.github.awant.habrareader
+package com.github.awant.habrareader.habr
 
 import cats.kernel.CommutativeSemigroup
 

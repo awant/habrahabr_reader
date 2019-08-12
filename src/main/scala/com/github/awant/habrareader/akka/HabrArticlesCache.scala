@@ -2,7 +2,7 @@ package com.github.awant.habrareader.akka
 
 import akka.actor.{Actor, ActorRef, Props}
 import cats.syntax.semigroup._
-import com.github.awant.habrareader.HabrArticle
+import com.github.awant.habrareader.habr.HabrArticle
 import com.github.awant.habrareader.utils.UniqueQueue
 
 import scala.collection.mutable
@@ -13,7 +13,7 @@ object HabrArticlesCache {
   def props(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habraParser: ActorRef): Props =
     Props(new HabrArticlesCache(updateRssInterval, updateCacheInterval, habraParser))
 
-  case class Subscribe(subscriber: ActorRef, recieveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
+  case class Subscribe(subscriber: ActorRef, receiveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
 
   case class PostUpdated(article: HabrArticle)
 

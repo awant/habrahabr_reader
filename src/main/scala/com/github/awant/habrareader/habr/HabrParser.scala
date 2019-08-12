@@ -1,17 +1,19 @@
-package com.github.awant.habrareader
+package com.github.awant.habrareader.habr
 
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale, TimeZone}
 
-import com.github.awant.habrareader.Implicits._
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
-import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
-import net.ruippeixotog.scalascraper.dsl.DSL._
+import net.ruippeixotog.scalascraper.scraper.ContentExtractors.{element, elementList}
 
 import scala.io.Source
 import scala.util.Try
 import scala.xml.XML
 
+import com.github.awant.habrareader.Implicits._
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
+import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
+import net.ruippeixotog.scalascraper.dsl.DSL._
 
 object HabrParser {
 

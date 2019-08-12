@@ -1,9 +1,10 @@
-package com.github.awant.habrareader
+package com.github.awant.habrareader.habr
 
-import java.net.{InetSocketAddress, Proxy}
+import com.github.awant.habrareader.Facade
 import com.typesafe.config.ConfigFactory
+
 import scala.concurrent.Await
-import scala.concurrent.duration._
+import scala.concurrent.duration.Duration
 
 object HabraReader {
 
