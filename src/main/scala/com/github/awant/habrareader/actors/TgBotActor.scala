@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import java.net.Proxy
 
@@ -9,8 +9,8 @@ import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
 import com.bot4s.telegram.methods.SendMessage
 import com.bot4s.telegram.models.Message
-import com.github.awant.habrareader.akka.AkkaSystem.BotConfig
-import com.github.awant.habrareader.akka.TgBotActor.MessageReceived
+import com.github.awant.habrareader.actors.AkkaSystem.BotConfig
+import com.github.awant.habrareader.actors.TgBotActor.MessageReceived
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -22,7 +22,7 @@ object TgBotActor {
 
   type SendMessage = com.bot4s.telegram.methods.SendMessage
 
-  case class MessageReceived(msg: Message)
+  final case class MessageReceived(msg: Message)
 
 }
 

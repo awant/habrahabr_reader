@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.LoggingReceive
@@ -14,11 +14,11 @@ object HabrParserActor {
 
   case object RequestRss
 
-  case class ParsedRss(articles: Seq[HabrArticle])
+  final case class ParsedRss(articles: Seq[HabrArticle])
 
-  case class RequestHtml(link: String)
+  final case class RequestHtml(link: String)
 
-  case class ParsedHtml(article: HabrArticle)
+  final case class ParsedHtml(article: HabrArticle)
 
 }
 

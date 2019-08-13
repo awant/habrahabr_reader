@@ -1,7 +1,5 @@
 name := "habrahabr_reader"
-
 version := "0.1"
-
 scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
@@ -12,5 +10,6 @@ libraryDependencies ++= Seq(
 	"com.bot4s" %% "telegram-akka" % "4.3.0-RC1",
 	"com.softwaremill.sttp" %% "core" % "1.6.4",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0", // html parsing
-  "org.typelevel" %% "cats-core" % "2.0.0-M1" // cats fp
+  "org.typelevel" %% "cats-core" % "2.0.0-M1", // cats fp
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0"
 )

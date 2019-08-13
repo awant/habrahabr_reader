@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import cats.syntax.semigroup._
@@ -13,11 +13,9 @@ object HabrArticlesCache {
   def props(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habraParser: ActorRef): Props =
     Props(new HabrArticlesCache(updateRssInterval, updateCacheInterval, habraParser))
 
-  case class Subscribe(subscriber: ActorRef, receiveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
-
-  case class PostUpdated(article: HabrArticle)
-
-  case class PostAdded(article: HabrArticle)
+  final case class Subscribe(subscriber: ActorRef, receiveNew: Boolean, receiveUpdates: Boolean, receiveExisting: Boolean)
+  final case class PostUpdated(article: HabrArticle)
+  final case class PostAdded(article: HabrArticle)
 
   private case object RequestUpdateRss
 

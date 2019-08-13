@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import com.bot4s.telegram.methods.{ParseMode, SendMessage}
