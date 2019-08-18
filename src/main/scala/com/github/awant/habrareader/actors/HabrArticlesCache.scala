@@ -9,6 +9,7 @@ import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
+@deprecated("legacy", "")
 object HabrArticlesCache {
   def props(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habraParser: ActorRef): Props =
     Props(new HabrArticlesCache(updateRssInterval, updateCacheInterval, habraParser))
@@ -20,7 +21,6 @@ object HabrArticlesCache {
   private case object RequestUpdateRss
 
   private case object RequestUpdateCache
-
 }
 
 /**
@@ -31,6 +31,7 @@ object HabrArticlesCache {
   * @param updateRssInterval : time between rss udates
   * @param habrParserActor   : actor parsing rss
   */
+@deprecated("legacy", "")
 class HabrArticlesCache private(updateRssInterval: FiniteDuration, updateCacheInterval: FiniteDuration, habrParserActor: ActorRef) extends Actor {
 
   import HabrArticlesCache._

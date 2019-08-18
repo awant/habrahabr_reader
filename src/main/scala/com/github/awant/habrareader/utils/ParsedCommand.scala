@@ -1,5 +1,6 @@
 package com.github.awant.habrareader.utils
 
+@deprecated("legacy", "")
 object ParsedCommand {
 
   def unapply(text: String): Option[(String, String)] = {

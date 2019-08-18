@@ -9,6 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
+@deprecated("legacy", "")
 object HabrParserActor {
   def props(): Props = Props(new HabrParserActor())
 
@@ -25,6 +26,7 @@ object HabrParserActor {
 /**
   * actor receives RequestRss message, gets it and sends back parsed result
   */
+@deprecated("legacy", "")
 class HabrParserActor private() extends Actor with ActorLogging {
 
   import HabrParserActor._
