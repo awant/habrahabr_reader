@@ -2,6 +2,7 @@ package com.github.awant.habrareader.utils
 
 import scala.collection.mutable
 
+@deprecated("legacy", "")
 class UniqueQueue[T] {
 
   private val queue = new mutable.Queue[T]()

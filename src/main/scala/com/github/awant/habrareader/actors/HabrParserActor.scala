@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.LoggingReceive
@@ -9,22 +9,24 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
+@deprecated("legacy", "")
 object HabrParserActor {
   def props(): Props = Props(new HabrParserActor())
 
   case object RequestRss
 
-  case class ParsedRss(articles: Seq[HabrArticle])
+  final case class ParsedRss(articles: Seq[HabrArticle])
 
-  case class RequestHtml(link: String)
+  final case class RequestHtml(link: String)
 
-  case class ParsedHtml(article: HabrArticle)
+  final case class ParsedHtml(article: HabrArticle)
 
 }
 
 /**
   * actor receives RequestRss message, gets it and sends back parsed result
   */
+@deprecated("legacy", "")
 class HabrParserActor private() extends Actor with ActorLogging {
 
   import HabrParserActor._

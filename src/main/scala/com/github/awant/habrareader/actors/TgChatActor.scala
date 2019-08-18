@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.akka
+package com.github.awant.habrareader.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import com.bot4s.telegram.methods.{ParseMode, SendMessage}
@@ -9,10 +9,12 @@ import com.github.awant.habrareader.utils.ParsedCommand
 import scala.collection.mutable
 import scala.util.Try
 
+@deprecated("legacy", "")
 object TgChatActor {
   def props(chat: Chat, tgHandler: ActorRef) = Props(new TgChatActor(chat, tgHandler))
 }
 
+@deprecated("legacy", "")
 class TgChatActor private(chat: Chat, tgHandler: ActorRef) extends Actor {
 
   private object preferences {
