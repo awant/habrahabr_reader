@@ -1,8 +1,8 @@
 package com.github.awant.habrareader.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.github.awant.habrareader.actors.TgBotActor.Reply
-import com.github.awant.habrareader.models.ChatData
+import com.github.awant.habrareader.models
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContextExecutor
@@ -10,7 +10,7 @@ import scala.util.{Failure, Success}
 
 
 object LibraryActor {
-  def props(subscriptionReplyInterval: FiniteDuration, chatData: ChatData): Props =
+  def props(subscriptionReplyInterval: FiniteDuration, chatData: models.ChatData): Props =
     Props(new LibraryActor(subscriptionReplyInterval, chatData))
 
   final case class BotSubscription(subscriber: ActorRef)
@@ -19,15 +19,17 @@ object LibraryActor {
   final case class SettingsGetting(chatId: Long)
   final case class SettingsChanging(chaitId: Long, body: String)
   final case class NewPostsSending()
+  final case class PostsUpdating(posts: Seq[models.Post])
 }
 
-class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: ChatData) extends Actor {
+class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.ChatData) extends Actor with ActorLogging {
   import LibraryActor._
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
+  var currentDate: Int = 0
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(subscriptionReplyInterval, subscriptionReplyInterval, self, NewPostsSending)
@@ -43,9 +45,12 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: ChatData
         case Failure(_) => subscribedBot ! Reply(chatId, "")
       }
     case NewPostsSending =>
-      chatData.getUpdates.onComplete {
-        case Success(updates) => println("Success") ; updates.foreach{case (chat, post) => subscribedBot ! Reply(chat.id, post.title)}
-        case Failure(_) => println("failure")
+      chatData.getUpdates(currentDate).onComplete {
+        case Success(updates) => updates.foreach{case (chat, post) => subscribedBot ! Reply(chat.id, post.title)}
+        case Failure(e) => log.error(s"$e")
       }
+      currentDate += 1
+    case PostsUpdating(posts) =>
+      chatData.save(posts)
   }
 }

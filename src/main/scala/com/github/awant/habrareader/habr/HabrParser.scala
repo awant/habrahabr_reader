@@ -16,12 +16,13 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 object HabrParser {
+  val rssURI = "https://habr.com/ru/rss/all/all/"
 
   /** may block thread or throw exceptions */
-  def loadPosts(url: String): Seq[HabrArticle] = parseRss(getTextFromUrl(url))
+  def loadPosts(url: String = rssURI): Seq[HabrArticle] = parseRss(getTextFromUrl(url))
 
   /** may block thread or throw exceptions */
-  def loadHtml(url: String): HabrArticle = parseHtml(getTextFromUrl(url))
+  def loadHtml(url: String = rssURI): HabrArticle = parseHtml(getTextFromUrl(url))
 
   def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
 

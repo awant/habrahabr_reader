@@ -24,13 +24,18 @@ class ChatData(chatCollection: MongoCollection[Chat],
       .map("subscription: " + _.subscription)
   }
 
-  def getUpdates: Future[Seq[(Chat, Post)]] = {
-    val chats = chatCollection.find()
-    chats.map(chat => (chat, Post(0, "testLink", "testTitle", "testDescription", "testAuthor"))).toFuture()
+  private def predicate(chat: Chat, post: Post): Boolean = {
+    chat.date < post.updateDate
   }
 
-  def save(post: Post): Future[Long] =
-    postCollection.insertOne(post)
-      .head
-      .map { _ => post.id }
+  def getUpdates(fromDate: Int): Future[Seq[(Chat, Post)]] = {
+    val chats = chatCollection.find(Document("subscription" -> true))
+    val posts = postCollection.find(Document("update" -> Document("$gt" -> fromDate)))
+
+    chats.flatMap(chat => posts.map(post => (chat, post)).filter{case (c, p) => predicate(c, p)}).toFuture()
+  }
+
+  def save(posts: Seq[Post]): Unit = {
+    postCollection.insertMany(posts)
+  }
 }
