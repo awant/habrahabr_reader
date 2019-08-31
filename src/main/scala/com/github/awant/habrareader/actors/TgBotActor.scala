@@ -8,7 +8,7 @@ import com.bot4s.telegram.api.declarative.Commands
 import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
 import com.bot4s.telegram.methods.SendMessage
-import com.github.awant.habrareader.HabraReader.BotConfig
+import com.github.awant.habrareader.BotConfig
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
 
 import scala.concurrent.{ExecutionContext, Future}
