@@ -1,4 +1,4 @@
-package com.github.awant.habrareader.habr
+package com.github.awant.habrareader.loaders
 
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale, TimeZone}
@@ -6,49 +6,39 @@ import java.util.{Date, Locale, TimeZone}
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.scraper.ContentExtractors.{element, elementList}
 
+import com.github.awant.habrareader.Implicits._
+
 import scala.io.Source
 import scala.util.Try
 import scala.xml.XML
-
-import com.github.awant.habrareader.Implicits._
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
-object HabrParser {
-  val rssURI = "https://habr.com/ru/rss/all/all/"
+
+object HabrArticlesDownloader {
+  private val rssURI = "https://habr.com/ru/rss/all/all/"
+
+  private def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
 
   /** may block thread or throw exceptions */
-  def loadPosts(url: String = rssURI): Seq[HabrArticle] = parseRss(getTextFromUrl(url))
+  def downloadRSSArticles: Seq[HabrArticleImprint] = parseRss(getTextFromUrl(rssURI))
 
   /** may block thread or throw exceptions */
-  def loadHtml(url: String = rssURI): HabrArticle = parseHtml(getTextFromUrl(url))
+  def downloadArticle(url: String, pubDate: Date): HabrArticle = parseHtml(getTextFromUrl(url), pubDate)
 
-  def getTextFromUrl(url: String): String = Source.fromURL(url).use(_.getLines().mkString("\n"))
-
-  def parseRss(text: String): Seq[HabrArticle] = {
+  def parseRss(text: String): Seq[HabrArticleImprint] = {
     val root = XML.loadString(text)
-
     val items = root \ "channel" \ "item"
 
     items.toList.map { item =>
       val link = (item \ "guid").text
-
-      HabrArticle(
-        id = link.filter(_.isDigit).toInt,
-        link = link,
-        title = (item \ "title").text,
-        description = (item \ "description").text,
-        date = Option(parseDate((item \ "pubDate").text)),
-        author = (item \ "creator").text,
-        categories = (item \ "category").map(_.text).toSet,
-        fullText = None,
-        rating = None,
-      )
+      val pubDate = parseDate((item \ "pubDate").text)
+      HabrArticleImprint(link, pubDate)
     }
   }
 
-  def parseHtml(htmlText: String): HabrArticle = {
+  // TODO: parse pubDate from html
+  def parseHtml(htmlText: String, pubDate: Date): HabrArticle = {
     val browser = JsoupBrowser()
     val doc = browser.parseString(htmlText)
 
@@ -72,7 +62,7 @@ object HabrParser {
     val views: Int = {
       val s: String = doc >> text(".post-stats__views")
       if (s.endsWith("k")) {
-        (s.replace(',', '.').substring(0, s.size - 1).toDouble * 1000).toInt
+        (s.replace(',', '.').substring(0, s.length - 1).toDouble * 1000).toInt
       } else {
         s.toInt
       }
@@ -83,25 +73,13 @@ object HabrParser {
       // isn't exist if no comments
     }.getOrElse(0)
 
-    val addedToBookmarks = doc >> text(".bookmark__counter")
+    val addedToBookmarks = (doc >> text(".bookmark__counter")).toInt
 
-    val rating = {
-      val string = (doc >> element(".voting-wjt__counter")).attr("title")
-      // Total rating 79: ↑43 and ↓36
-      val arr = string.split(Array('↑', '↓')).map(s => s.filter(_.isDigit).toInt)
-      val upvotes = arr(1)
-      val downvotes = arr(2)
-      ArticleStatistics(
-        upVotes = upvotes,
-        downVotes = downvotes,
-        viewsCount = views,
-        commentsCount = commentsCount,
-        bookmarksCount = addedToBookmarks.toInt
-      )
-    }
-
+    val string = (doc >> element(".voting-wjt__counter")).attr("title")
+    val arr = string.split(Array('↑', '↓')).map(s => s.filter(_.isDigit).toInt)
+    val upvotes = arr(1)
+    val downvotes = arr(2)
     val title = doc >> text(".post__title-text")
-    val fullText = doc >> text(".post_full")
 
     HabrArticle(
       id = id,
@@ -109,11 +87,13 @@ object HabrParser {
       title = title,
       description = description,
       author = author,
-      date = None,
+      publicationDate = pubDate,
       categories = categories,
-      fullText = Option(fullText),
-      rating = Option(rating),
-    )
+      upVotes = upvotes,
+      downVotes = downvotes,
+      viewsCount = views,
+      commentsCount = commentsCount,
+      bookmarksCount = addedToBookmarks)
   }
 
   def parseDate(s: String): Date = dateFormat.parse(s)
@@ -121,4 +101,11 @@ object HabrParser {
   private val dateFormat = new SimpleDateFormat("EEE, dd MMM yyy HH:mm:ss 'GMT'", Locale.ENGLISH) {
     setTimeZone(TimeZone.getTimeZone("GMT"))
   }
+
+  def get(from: Date, to: Date): Seq[HabrArticle] =
+    downloadRSSArticles
+      .filter(imprint => (from.compareTo(imprint.publicationDate) <= 0) & (to.compareTo(imprint.publicationDate) > 0))
+      .map(imprint => parseHtml(imprint.link, imprint.publicationDate))
+
+  def update(link: String, pubDate: Date): HabrArticle = downloadArticle(link, pubDate)
 }
