@@ -25,7 +25,7 @@ class ChatData(chatCollection: MongoCollection[Chat],
   }
 
   private def predicate(chat: Chat, post: Post): Boolean = {
-    chat.date < post.updateDate
+    true
   }
 
   def getUpdates(fromDate: Int): Future[Seq[(Chat, Post)]] = {

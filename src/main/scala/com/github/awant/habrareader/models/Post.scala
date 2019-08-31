@@ -2,6 +2,8 @@ package com.github.awant.habrareader.models
 
 import io.circe.syntax._
 import io.circe._
+import java.util.Date
+import com.github.awant.habrareader.utils.DateUtils
 
 case class Post(link: String,
                 title: String,
@@ -12,7 +14,7 @@ case class Post(link: String,
                 viewsCount: Int,
                 commentsCount: Int,
                 bookmarksCount: Int,
-                updateDate: Int)
+                updateDate: Date)
 
 object Post {
   implicit val encoder: Encoder[Post] = (post: Post) => {
@@ -26,7 +28,7 @@ object Post {
       "views" -> post.viewsCount.asJson,
       "comments" -> post.commentsCount.asJson,
       "bookmarks" -> post.bookmarksCount.asJson,
-      "update_date" -> post.updateDate.asJson
+      "update_date" -> DateUtils.convertToStr(post.updateDate).asJson
     )
   }
 
@@ -41,9 +43,12 @@ object Post {
       viewsCount <- c.downField("views").as[Int]
       commentsCount <- c.downField("comments").as[Int]
       bookmarksCount <- c.downField("bookmarks").as[Int]
-      updateDate <- c.downField("update_date").as[Int]
-    } yield Post(link, title, description, author, upVotes, downVotes, viewsCount, commentsCount, bookmarksCount, updateDate)
+      updateDate <- c.downField("update_date").as[String]
+    } yield Post(
+      link, title, description, author, upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
+      DateUtils.convertToDate(updateDate)
+    )
   }
 
-  def getTest = Post("wwww.test.com", "test title", "test description", "test author", 0, 0, 0, 0, 0, 0)
+  def getTest = Post("wwww.test.com", "test title", "test description", "test author", 0, 0, 0, 0, 0, DateUtils.currentDate)
 }

@@ -4,6 +4,7 @@ import scala.concurrent.duration._
 import akka.actor.{Actor, ActorRef, Props}
 import com.github.awant.habrareader.habr.HabrParser
 import com.github.awant.habrareader.models
+import com.github.awant.habrareader.utils.DateUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -38,7 +39,7 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
       viewsCount = article.rating.get.viewsCount,
       commentsCount = article.rating.get.commentsCount,
       bookmarksCount = article.rating.get.bookmarksCount,
-      updateDate = 0))
+      updateDate = DateUtils.currentDate))
     library ! LibraryActor.PostsUpdating(posts)
   }
 
