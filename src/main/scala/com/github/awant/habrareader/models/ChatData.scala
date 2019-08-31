@@ -1,9 +1,12 @@
 package com.github.awant.habrareader.models
 
+import java.util.Date
+
+import com.github.awant.habrareader.utils.DateUtils
 import org.mongodb.scala._
 
 import scala.concurrent.{ExecutionContext, Future}
-import org.mongodb.scala.result.{ DeleteResult, UpdateResult }
+import org.mongodb.scala.result.{DeleteResult, UpdateResult}
 import com.mongodb.client.model.UpdateOptions
 
 class ChatData(chatCollection: MongoCollection[Chat],
@@ -28,9 +31,9 @@ class ChatData(chatCollection: MongoCollection[Chat],
     true
   }
 
-  def getUpdates(fromDate: Int): Future[Seq[(Chat, Post)]] = {
+  def getUpdates(fromDate: Date): Future[Seq[(Chat, Post)]] = {
     val chats = chatCollection.find(Document("subscription" -> true))
-    val posts = postCollection.find(Document("update" -> Document("$gt" -> fromDate)))
+    val posts = postCollection.find(Document("update" -> Document("$gt" -> DateUtils.convertToStr(fromDate))))
 
     chats.flatMap(chat => posts.map(post => (chat, post)).filter{case (c, p) => predicate(c, p)}).toFuture()
   }

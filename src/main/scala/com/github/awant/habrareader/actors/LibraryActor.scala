@@ -1,8 +1,11 @@
 package com.github.awant.habrareader.actors
 
+import java.util.Date
+
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.github.awant.habrareader.actors.TgBotActor.Reply
 import com.github.awant.habrareader.models
+import com.github.awant.habrareader.utils.DateUtils
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContextExecutor
@@ -29,7 +32,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
-  var currentDate: Int = 0
+  var lastUpdateDate: Date = DateUtils.currentDate
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(subscriptionReplyInterval, subscriptionReplyInterval, self, NewPostsSending)
@@ -45,12 +48,11 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
         case Failure(_) => subscribedBot ! Reply(chatId, "")
       }
     case NewPostsSending =>
-      chatData.getUpdates(currentDate).onComplete {
+      chatData.getUpdates(lastUpdateDate).onComplete {
         case Success(updates) => updates.foreach{case (chat, post) => subscribedBot ! Reply(chat.id, post.title)}
         case Failure(e) => log.error(s"$e")
       }
-      currentDate += 1
-    case PostsUpdating(posts) =>
-      chatData.save(posts)
+      lastUpdateDate = DateUtils.add(lastUpdateDate, subscriptionReplyInterval)
+    case PostsUpdating(posts) => chatData.save(posts)
   }
 }

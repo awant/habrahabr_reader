@@ -8,7 +8,6 @@ import com.github.awant.habrareader.mongodb.Mongo
 import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
 import pureconfig.generic.auto._
 
 
@@ -21,8 +20,8 @@ object HabraReader extends App {
 
   implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  val libraryActor = actorSystem.actorOf(LibraryActor.props(10.second,
+  val libraryActor = actorSystem.actorOf(LibraryActor.props(chatsUpdateTime,
     new ChatData(Mongo.chatCollection, Mongo.postCollection, Mongo.eventCollection)), "library")
-  val shopActor = actorSystem.actorOf(ShopActor.props(5.minute, libraryActor), "shop")
+  val shopActor = actorSystem.actorOf(ShopActor.props(articlesUpdateTime, libraryActor), "shop")
   val tgBotActor = actorSystem.actorOf(TgBotActor.props(botConfig, libraryActor), "tgBot")
 }
