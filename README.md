@@ -13,14 +13,12 @@ The goal is to implement a reader of habrahabr posts with configurable filters. 
   * Store articles form habrahabr
 3. A requester, which is built on top of telegram api. It applies settings for users and responsible for new articles
 
-### Todo
+### Git scheme:
 
-* [] parsing for RSS (example in tests/resources)
-* [] saving posts
-* [] Actor for sending messages to telegram
-* [] formatting post for telegram (removing html tags like <b>)
+Workflow is taken from https://nvie.com/posts/a-successful-git-branching-model/
 
-### Useful links:
+Versioning: **[major].[minor].[patch]**
 
-* [awesome-scala list](https://github.com/lauris/awesome-scala)
-* [eax.me about akka](https://eax.me/tag/akka/) 
+### Features:
+
+1. /subscribe; /ubsibscribe. Get all articles from habrahabr without filtering
