@@ -5,11 +5,10 @@ import java.util.{Date, Locale, TimeZone}
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.scraper.ContentExtractors.{element, elementList}
-
 import com.github.awant.habrareader.Implicits._
 
 import scala.io.Source
-import scala.util.Try
+import scala.util.{Success, Try}
 import scala.xml.XML
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
@@ -46,15 +45,15 @@ object HabrArticlesDownloader {
 
     val description: String = metaAttributes.find { attrs =>
       attrs.get("name").contains("description") && attrs.contains("content")
-    }.map(_ ("content")).get.trim
+    }.map(_ ("content")).getOrElse("").trim
 
     val categories: Set[String] = metaAttributes.find { attrs =>
       attrs.get("name").contains("keywords") && attrs.contains("content")
-    }.map(_ ("content")).get.split(", ").toSet
+    }.map(_ ("content")).getOrElse("").split(", ").toSet
 
     val link: String = metaAttributes.find { attrs =>
       attrs.get("property").contains("og:url")
-    }.map(_ ("content")).get
+    }.map(_ ("content")).getOrElse("")
 
     val id: Int = link.split("/").filter(_.nonEmpty).last.toInt
     val author: String = doc >> text(".post__meta .user-info__nickname")

@@ -32,8 +32,11 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
   }
 
   def updatePosts(): Unit = {
-    val from = lastTimeUpdate
-    val to = DateUtils.add(from, updatePostsInterval)
+//    val from = lastTimeUpdate
+//    val to = DateUtils.add(from, updatePostsInterval)
+    val to = DateUtils.currentDate
+    val from = DateUtils.yesterday
+
     val habrArticles = HabrArticlesDownloader.get(from, to)
 
     val posts = habrArticles.map(article => models.Post(

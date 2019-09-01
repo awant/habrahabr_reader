@@ -3,7 +3,7 @@ package com.github.awant.habrareader.actors
 import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.github.awant.habrareader.actors.TgBotActor.Reply
+import com.github.awant.habrareader.actors.TgBotActor.{Reply, PostReply}
 import com.github.awant.habrareader.models
 import com.github.awant.habrareader.utils.DateUtils
 
@@ -32,7 +32,8 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
-  var lastUpdateDate: Date = DateUtils.currentDate
+//  var lastUpdateDate: Date = DateUtils.currentDate
+  var lastUpdateDate: Date = DateUtils.yesterday
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(subscriptionReplyInterval, subscriptionReplyInterval, self, NewPostsSending)
@@ -49,7 +50,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
       }
     case NewPostsSending =>
       chatData.getUpdates(lastUpdateDate).onComplete {
-        case Success(updates) => updates.foreach{case (chat, post) => subscribedBot ! Reply(chat.id, post.title)}
+        case Success(updates) => updates.foreach{case (chat, post) => subscribedBot ! PostReply(chat.id, post)}
         case Failure(e) => log.error(s"$e")
       }
       lastUpdateDate = DateUtils.add(lastUpdateDate, subscriptionReplyInterval)
