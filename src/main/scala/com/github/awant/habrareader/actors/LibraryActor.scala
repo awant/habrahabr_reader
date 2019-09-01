@@ -3,9 +3,11 @@ package com.github.awant.habrareader.actors
 import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.github.awant.habrareader.actors.TgBotActor.{Reply, PostReply}
+import com.github.awant.habrareader.actors.TgBotActor.{PostReply, Reply}
 import com.github.awant.habrareader.models
-import com.github.awant.habrareader.utils.DateUtils
+import com.github.awant.habrareader.models.Chat
+import com.github.awant.habrareader.utils.ChangeCommand.ChangeCommand
+import com.github.awant.habrareader.utils.{ChangeCommand, DateUtils, SettingsRequestParser}
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContextExecutor
@@ -20,7 +22,7 @@ object LibraryActor {
 
   final case class SubscriptionChanging(chatId: Long, subscribe: Boolean)
   final case class SettingsGetting(chatId: Long)
-  final case class SettingsChanging(chaitId: Long, body: String)
+  final case class SettingsChanging(chatId: Long, body: String)
   final case class NewPostsSending()
   final case class PostsUpdating(posts: Seq[models.Post])
 }
@@ -43,9 +45,18 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
     case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
       chatData.updateSubscription(chatId, subscribe).onComplete {
-        case Success(_) => _
-        case Failure(_) => _
+        case Success(_) => Nil
+        case Failure(err) => println(err)
     }
+    case SettingsChanging(chatId: Long, cmd: String) =>
+      val settingsCmd = SettingsRequestParser.parse(cmd)
+      settingsCmd.cmd match {
+        case ChangeCommand.UNKNOWN => Reply(chatId, "Unknown command")
+        case ChangeCommand.RESET => chatData.updateChat(Chat.withDefaultSettings(chatId))
+        case ChangeCommand.CLEAR => chatData.updateChat(Chat.withEmptySettings(chatId))
+        case ChangeCommand.SET => chatData.appendSettingToChat(chatId, settingsCmd.args.head, settingsCmd.args(1))
+      }
+
     case SettingsGetting(chatId) =>
       chatData.getChatSettings(chatId).onComplete {
         case Success(settings) => subscribedBot ! Reply(chatId, settings)

@@ -9,6 +9,7 @@ case class Post(link: String,
                 title: String,
                 description: String,
                 author: String,
+                categories: Seq[String],
                 upVotes: Int,
                 downVotes: Int,
                 viewsCount: Int,
@@ -23,6 +24,7 @@ object Post {
       "title" -> post.title.asJson,
       "description" -> post.description.asJson,
       "author" -> post.author.asJson,
+      "categories" -> post.categories.asJson,
       "upvotes" -> post.upVotes.asJson,
       "downvotes" -> post.downVotes.asJson,
       "views" -> post.viewsCount.asJson,
@@ -38,6 +40,7 @@ object Post {
       title <- c.downField("title").as[String]
       description <- c.downField("description").as[String]
       author <- c.downField("author").as[String]
+      categories <- c.downField("categories").as[Seq[String]]
       upVotes <- c.downField("upvotes").as[Int]
       downVotes <- c.downField("downvotes").as[Int]
       viewsCount <- c.downField("views").as[Int]
@@ -45,10 +48,14 @@ object Post {
       bookmarksCount <- c.downField("bookmarks").as[Int]
       updateDate <- c.downField("updateDate").as[String]
     } yield Post(
-      link, title, description, author, upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
+      link, title, description, author, categories,
+      upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
       DateUtils.convertToDate(updateDate)
     )
   }
 
-  def getTest = Post("wwww.test.com", "test title", "test description", "test author", 0, 0, 0, 0, 0, DateUtils.currentDate)
+  def getTest = Post(
+    "wwww.test.com", "test title", "test description", "test author", Seq("test"),
+    0, 0, 0, 0, 0, DateUtils.currentDate
+  )
 }
