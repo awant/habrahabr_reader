@@ -1,19 +1,15 @@
 package com.github.awant.habrareader
 
 import java.io.File
-import java.util.{Calendar, Date, TimeZone}
+import java.util.{Calendar, TimeZone}
 
 import com.github.awant.habrareader.Implicits._
-import com.github.awant.habrareader.loaders.{HabrArticle, HabrArticleImprint, HabrArticlesDownloader}
+import com.github.awant.habrareader.loaders.{HabrArticleImprint, HabrArticlesDownloader}
 import com.github.awant.habrareader.utils.DateUtils
-import org.scalatest.FunSuite
+import org.scalatest.{FunSuite, Ignore}
+
 
 class HabrParserTest extends FunSuite {
-
-//  test("testing") {
-//    val articles = HabrArticlesDownloader.downloadRSSArticles
-//    articles.foreach(println(_))
-//  }
 
   test("testRssParse") {
     val file = new File(getClass.getClassLoader.getResource("exampleOfHabrRss.xml").getFile)
@@ -58,4 +54,26 @@ class HabrParserTest extends FunSuite {
     assert(article.bookmarksCount == 37)
   }
 
+}
+
+@Ignore
+class ExternalSuite extends FunSuite {
+  test("loding rss articles") {
+    val articles = HabrArticlesDownloader.downloadRSSArticles
+    articles.foreach(println(_))
+  }
+
+  test("html parsing") {
+    // Malformed input for articles:
+    // https://habr.com/ru/post/465703/
+    val article = HabrArticlesDownloader.downloadArticle("https://habr.com/ru/post/465703/", DateUtils.yesterday)
+    println(article)
+  }
+
+  test("download articles") {
+    val from = DateUtils.yesterday
+    val to = DateUtils.currentDate
+    val article = HabrArticlesDownloader.get(from, to)
+    article.foreach(println)
+  }
 }

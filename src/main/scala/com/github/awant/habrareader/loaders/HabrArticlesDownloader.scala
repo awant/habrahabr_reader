@@ -102,10 +102,11 @@ object HabrArticlesDownloader {
     setTimeZone(TimeZone.getTimeZone("GMT"))
   }
 
-  def get(from: Date, to: Date): Seq[HabrArticle] =
-    downloadRSSArticles
+  def get(from: Date, to: Date): Seq[HabrArticle] = {
+    val imprints = downloadRSSArticles
       .filter(imprint => (from.compareTo(imprint.publicationDate) <= 0) & (to.compareTo(imprint.publicationDate) > 0))
-      .map(imprint => parseHtml(imprint.link, imprint.publicationDate))
+    imprints.map(imprint => Try(downloadArticle(imprint.link, imprint.publicationDate))).collect{case Success(s) => s}
+  }
 
   def update(link: String, pubDate: Date): HabrArticle = downloadArticle(link, pubDate)
 }
