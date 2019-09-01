@@ -8,7 +8,8 @@ import com.bot4s.telegram.api.declarative.Commands
 import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
 import com.bot4s.telegram.methods.SendMessage
-import com.github.awant.habrareader.HabraReader.BotConfig
+import com.github.awant.habrareader.BotConfig
+import com.github.awant.habrareader.models.Post
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,7 +21,8 @@ object TgBotActor {
   final case class Subscription(chatId: Long, set: Boolean)
   final case class Settings(chatId: Long)
   final case class SettingsUpd(chatId: Long, text: String)
-  final case class Reply(chatId: Long, text: String)
+  final case class Reply(chatId: Long, msg: String)
+  final case class PostReply(chatId: Long, post: Post)
 }
 
 class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor with ActorLogging {
@@ -46,7 +48,6 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
     bot.onCommand(_.cmd.startsWith("set")) { msg =>
       Future { self ! SettingsUpd(msg.chat.id, msg.text.get) }
     }
-
     bot
   }
 
@@ -55,11 +56,21 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
     bot.run()
   }
 
+  private def formMessage(post: Post): String = {
+    s"""author: ${post.author}
+         |up votes: ${post.upVotes}
+         |down votes: ${post.downVotes}
+         |*${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
+         |${post.link}
+      """.stripMargin
+  }
+
   override def receive: Receive = {
     case Subscription(chatId, set) => library ! LibraryActor.SubscriptionChanging(chatId, set)
     case Settings(chatId) => library ! LibraryActor.SettingsGetting(chatId)
     case SettingsUpd(chatId, body) => library ! LibraryActor.SettingsChanging(chatId, body)
-    case Reply(chatId, body) => bot.request(SendMessage(chatId, body))
+    case Reply(chatId, msg) => bot.request(SendMessage(chatId, msg))
+        case PostReply(chatId, post) => bot.request(SendMessage(chatId, formMessage(post)))
   }
 }
 
