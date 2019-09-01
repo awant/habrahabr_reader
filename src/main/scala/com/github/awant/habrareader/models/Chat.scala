@@ -38,6 +38,26 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
 }
 
 object Chat {
+  def withDefaultSettings(id: Long) = Chat(id, DateUtils.currentDate,
+    subscription = true,
+    authorsScope = ChatScope.ALL,
+    authors = Seq.empty,
+    excludedAuthors = Seq.empty,
+    categoryScope = ChatScope.ALL,
+    categories = Seq.empty,
+    excludedCategories = Seq.empty
+  )
+
+  def withEmptySettings(id: Long) = Chat(id, DateUtils.currentDate,
+    subscription = false,
+    authorsScope = ChatScope.NONE,
+    authors = Seq.empty,
+    excludedAuthors = Seq.empty,
+    categoryScope = ChatScope.NONE,
+    categories = Seq.empty,
+    excludedCategories = Seq.empty
+  )
+
   implicit val encoder: Encoder[Chat] = (chat: Chat) => {
     Json.obj(
       "id" -> chat.id.asJson,

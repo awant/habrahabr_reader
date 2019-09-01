@@ -7,8 +7,9 @@ import com.github.awant.habrareader.utils.DateUtils
 import org.mongodb.scala._
 
 import scala.concurrent.{ExecutionContext, Future}
-import org.mongodb.scala.result.{DeleteResult, UpdateResult}
+import org.mongodb.scala.result.UpdateResult
 import com.mongodb.client.model.UpdateOptions
+import org.mongodb.scala.bson.BsonDocument
 
 import scala.util.{Failure, Success}
 
@@ -21,6 +22,21 @@ class ChatData(chatCollection: MongoCollection[Chat],
       Document("$set" -> Document(
         "subscription" -> subscription,
         "createdDate" -> DateUtils.currentDate)), // last updated time
+      options).toFuture
+  }
+
+  def updateChat(chat: Chat): Future[Chat] = {
+    chatCollection.findOneAndUpdate(Document("id" -> chat.id), BsonDocument(Chat.encoder(chat).toString())).toFuture
+  }
+
+  def getChat(id: Long): Future[Chat] = {
+    chatCollection.find(Document("id" -> id)).first.head
+  }
+
+  def appendSettingToChat(id: Long, field: String, value: String): Unit = {
+    val options = new UpdateOptions().upsert(true)
+    chatCollection.updateOne(Document("id" -> id),
+      Document("$push" -> Document(field -> value)),
       options).toFuture
   }
 

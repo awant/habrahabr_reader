@@ -94,7 +94,7 @@ class ObservableTgBot(override val client: RequestHandler[Future], observer: Act
          |/subscribe - subscribe to receive new articles
          |/unsubscribe - unsubscribe
          |/settings - get all settings
-         |/reset - set all settings to default values (subscription to all authors)
+         |/reset - set all settings to default values (subscription to all authors, categories)
          |/clear - drop all settings to null, unsubscribe
          |/setExcludedAuthor - don't receive articles from the author
          |/setExcludedCategory - don't receive articles from the category
