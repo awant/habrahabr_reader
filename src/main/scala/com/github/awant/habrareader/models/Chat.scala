@@ -3,18 +3,38 @@ package com.github.awant.habrareader.models
 import com.github.awant.habrareader.utils.DateUtils
 import java.util.Date
 
-import com.github.awant.habrareader.models.ChatScope.ChatScope
 import io.circe.syntax._
 import io.circe._
 
+import org.bson.{BsonReader, BsonWriter}
+import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
 
-object ChatScope extends Enumeration {
-  type ChatScope = Value
-  val ALL: Value = Value("all")
-  val NONE: Value = Value("")
 
+sealed trait ChatScope {
+  def chatScopeType: String
+}
+
+case class ChatScopeAll() extends ChatScope { override val chatScopeType: String = "all" }
+case class ChatScopeNone() extends ChatScope { override val chatScopeType: String = "" }
+
+object ChatScope {
   def fromString(scope: String): ChatScope = {
-    values.find(_.toString == scope).getOrElse(ALL)
+    if (scope == ChatScopeAll().chatScopeType) ChatScopeAll()
+    else if (scope == ChatScopeNone().chatScopeType) ChatScopeNone()
+    else throw new IllegalArgumentException("illegal scope argument")
+  }
+}
+
+class ChatScopeCodec extends Codec[ChatScope] {
+  override def encode(writer: BsonWriter,
+                      value: ChatScope,
+                      encoderContext: EncoderContext
+                     ): Unit = writer.writeString(value.chatScopeType)
+  override def getEncoderClass: Class[ChatScope] = classOf[ChatScope]
+  override def decode(reader: BsonReader,
+                      decoderContext: DecoderContext): ChatScope = {
+    val value = reader.readString()
+    ChatScope.fromString(value)
   }
 }
 
@@ -23,8 +43,8 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
                 categoryScope: ChatScope, categories: Seq[String], excludedCategories: Seq[String]) {
 
   private def formScope(scope: ChatScope, values: Seq[String], excludedValues: Seq[String]): String = scope match {
-    case ChatScope.ALL => scope.toString + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
-    case ChatScope.NONE => scope.toString + values.mkString(", ")
+    case ChatScopeAll() => scope.toString + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
+    case ChatScopeNone() => scope.toString + values.mkString(", ")
   }
   private def formAuthorsScope: String = formScope(authorsScope, authors, excludedAuthors)
   private def formCategoriesScope: String = formScope(categoryScope, categories, excludedCategories)
@@ -38,22 +58,22 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
 }
 
 object Chat {
-  def withDefaultSettings(id: Long) = Chat(id, DateUtils.currentDate,
-    subscription = true,
-    authorsScope = ChatScope.ALL,
+  def withDefaultSettings(id: Long, subscription: Boolean = true) = Chat(id, DateUtils.currentDate,
+    subscription = subscription,
+    authorsScope = ChatScopeAll(),
     authors = Seq.empty,
     excludedAuthors = Seq.empty,
-    categoryScope = ChatScope.ALL,
+    categoryScope = ChatScopeAll(),
     categories = Seq.empty,
     excludedCategories = Seq.empty
   )
 
   def withEmptySettings(id: Long) = Chat(id, DateUtils.currentDate,
     subscription = false,
-    authorsScope = ChatScope.NONE,
+    authorsScope = ChatScopeNone(),
     authors = Seq.empty,
     excludedAuthors = Seq.empty,
-    categoryScope = ChatScope.NONE,
+    categoryScope = ChatScopeNone(),
     categories = Seq.empty,
     excludedCategories = Seq.empty
   )
@@ -64,11 +84,11 @@ object Chat {
       "lastUpdateDate" -> DateUtils.convertToStr(chat.lastUpdateDate).asJson,
       "subscription" -> chat.subscription.asJson,
 
-      "authorsScope" -> chat.authorsScope.toString.asJson,
+      "authorsScope" -> chat.authorsScope.chatScopeType.asJson,
       "authors" -> chat.authors.asJson,
       "excludedAuthors" -> chat.excludedAuthors.asJson,
 
-      "categoryScope" -> chat.categoryScope.toString.asJson,
+      "categoryScope" -> chat.categoryScope.chatScopeType.asJson,
       "categories" -> chat.categories.asJson,
       "excludedCategories" -> chat.excludedCategories.asJson,
     )

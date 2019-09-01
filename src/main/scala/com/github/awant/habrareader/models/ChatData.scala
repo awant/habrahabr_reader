@@ -2,14 +2,11 @@ package com.github.awant.habrareader.models
 
 import java.util.Date
 
-import com.github.awant.habrareader.actors.TgBotActor.Reply
-import com.github.awant.habrareader.utils.DateUtils
 import org.mongodb.scala._
 
 import scala.concurrent.{ExecutionContext, Future}
 import org.mongodb.scala.result.UpdateResult
-import com.mongodb.client.model.UpdateOptions
-import org.mongodb.scala.bson.BsonDocument
+import com.mongodb.client.model.{ReplaceOptions, UpdateOptions}
 
 import scala.util.{Failure, Success}
 
@@ -17,16 +14,13 @@ class ChatData(chatCollection: MongoCollection[Chat],
                postCollection: MongoCollection[Post])(implicit ec: ExecutionContext) {
 
   def updateSubscription(id: Long, subscription: Boolean): Future[UpdateResult] = {
-    val options = new UpdateOptions().upsert(true)
-    chatCollection.updateOne(Document("id" -> id),
-      Document("$set" -> Document(
-        "subscription" -> subscription,
-        "createdDate" -> DateUtils.currentDate)), // last updated time
-      options).toFuture
+    val options = new ReplaceOptions().upsert(true)
+    val chat = Chat.withDefaultSettings(id, subscription)
+    chatCollection.replaceOne(Document("id" -> id), chat, options).toFuture
   }
 
   def updateChat(chat: Chat): Future[Chat] = {
-    chatCollection.findOneAndUpdate(Document("id" -> chat.id), BsonDocument(Chat.encoder(chat).toString())).toFuture
+    chatCollection.findOneAndReplace(Document("id" -> chat.id), chat).toFuture
   }
 
   def getChat(id: Long): Future[Chat] = {
@@ -44,7 +38,13 @@ class ChatData(chatCollection: MongoCollection[Chat],
     chatCollection.find(Document("id" -> id)).first.head.map(_.getSettingsPrettify)
 
   private def predicate(chat: Chat, post: Post): Boolean = {
-    true
+    // filter by author
+    if ((chat.authorsScope == ChatScopeAll()) && chat.excludedAuthors.contains(post.author)) false
+    else if ((chat.authorsScope == ChatScopeNone()) && !chat.authors.contains(post.author)) false
+    // filter by categories
+    else if ((chat.categoryScope == ChatScopeAll()) && post.categories.exists(chat.excludedCategories.contains(_))) false
+    else if ((chat.categoryScope == ChatScopeNone()) && post.categories.forall(!chat.categories.contains(_))) false
+    else true
   }
 
   def getUpdates(fromDate: Date): Future[Seq[(Chat, Post)]] = {
@@ -57,7 +57,7 @@ class ChatData(chatCollection: MongoCollection[Chat],
   def save(posts: Seq[Post]): Unit = {
     postCollection.insertMany(posts).toFuture().onComplete{
       case Success(_) => Nil
-      case Failure(err) => Nil
+      case Failure(_) => Nil
     }
   }
 

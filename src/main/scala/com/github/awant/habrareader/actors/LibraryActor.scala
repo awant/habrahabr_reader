@@ -46,7 +46,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
     case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
       chatData.updateSubscription(chatId, subscribe).onComplete {
         case Success(_) => Nil
-        case Failure(_) => Nil
+        case Failure(err) => println(err)
     }
     case SettingsChanging(chatId: Long, cmd: String) =>
       val settingsCmd = SettingsRequestParser.parse(cmd)
