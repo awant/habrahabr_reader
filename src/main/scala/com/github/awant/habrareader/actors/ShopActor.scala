@@ -44,7 +44,7 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
       title = article.title,
       description = article.description,
       author = article.author,
-      categories = article.categories,
+      categories = article.categories.toSeq,
       upVotes = article.upVotes,
       downVotes = article.downVotes,
       viewsCount = article.viewsCount,

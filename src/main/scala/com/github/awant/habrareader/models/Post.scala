@@ -9,7 +9,7 @@ case class Post(link: String,
                 title: String,
                 description: String,
                 author: String,
-                categories: Set[String],
+                categories: Seq[String],
                 upVotes: Int,
                 downVotes: Int,
                 viewsCount: Int,
@@ -40,7 +40,7 @@ object Post {
       title <- c.downField("title").as[String]
       description <- c.downField("description").as[String]
       author <- c.downField("author").as[String]
-      categories <- c.downField("categories").as[Set[String]]
+      categories <- c.downField("categories").as[Seq[String]]
       upVotes <- c.downField("upvotes").as[Int]
       downVotes <- c.downField("downvotes").as[Int]
       viewsCount <- c.downField("views").as[Int]
@@ -55,7 +55,7 @@ object Post {
   }
 
   def getTest = Post(
-    "wwww.test.com", "test title", "test description", "test author", Set("test"),
+    "wwww.test.com", "test title", "test description", "test author", Seq("test"),
     0, 0, 0, 0, 0, DateUtils.currentDate
   )
 }

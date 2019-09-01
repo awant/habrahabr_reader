@@ -42,7 +42,7 @@ class ChatData(chatCollection: MongoCollection[Chat],
     if ((chat.authorsScope == ChatScopeAll()) && chat.excludedAuthors.contains(post.author)) false
     else if ((chat.authorsScope == ChatScopeNone()) && !chat.authors.contains(post.author)) false
     // filter by categories
-    else if ((chat.categoryScope == ChatScopeAll()) && post.categories.exists(chat.excludedCategories.contains(_))) false
+    else if ((chat.categoryScope == ChatScopeAll()) && post.categories.exists(chat.excludedCategories.contains)) false
     else if ((chat.categoryScope == ChatScopeNone()) && post.categories.forall(!chat.categories.contains(_))) false
     else true
   }

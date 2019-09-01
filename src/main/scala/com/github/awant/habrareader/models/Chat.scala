@@ -10,8 +10,8 @@ import org.bson.{BsonReader, BsonWriter}
 import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
 
 
-sealed trait ChatScope {
-  def chatScopeType: String
+sealed class ChatScope {
+  def chatScopeType: String = ""
 }
 
 case class ChatScopeAll() extends ChatScope { override val chatScopeType: String = "all" }
@@ -43,8 +43,9 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
                 categoryScope: ChatScope, categories: Seq[String], excludedCategories: Seq[String]) {
 
   private def formScope(scope: ChatScope, values: Seq[String], excludedValues: Seq[String]): String = scope match {
-    case ChatScopeAll() => scope.toString + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
-    case ChatScopeNone() => scope.toString + values.mkString(", ")
+    case ChatScopeAll() => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
+    case ChatScopeNone() => scope.chatScopeType + values.mkString(", ")
+    case _ => ""
   }
   private def formAuthorsScope: String = formScope(authorsScope, authors, excludedAuthors)
   private def formCategoriesScope: String = formScope(categoryScope, categories, excludedCategories)
@@ -61,21 +62,21 @@ object Chat {
   def withDefaultSettings(id: Long, subscription: Boolean = true) = Chat(id, DateUtils.currentDate,
     subscription = subscription,
     authorsScope = ChatScopeAll(),
-    authors = Seq.empty,
-    excludedAuthors = Seq.empty,
+    authors = Seq[String](),
+    excludedAuthors = Seq[String](),
     categoryScope = ChatScopeAll(),
-    categories = Seq.empty,
-    excludedCategories = Seq.empty
+    categories = Seq[String](),
+    excludedCategories = Seq[String]()
   )
 
   def withEmptySettings(id: Long) = Chat(id, DateUtils.currentDate,
     subscription = false,
     authorsScope = ChatScopeNone(),
-    authors = Seq.empty,
-    excludedAuthors = Seq.empty,
+    authors = Seq[String](),
+    excludedAuthors = Seq[String](),
     categoryScope = ChatScopeNone(),
-    categories = Seq.empty,
-    excludedCategories = Seq.empty
+    categories = Seq[String](),
+    excludedCategories = Seq[String]()
   )
 
   implicit val encoder: Encoder[Chat] = (chat: Chat) => {
