@@ -8,9 +8,12 @@ import com.bot4s.telegram.api.declarative.Commands
 import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
 import com.bot4s.telegram.methods.SendMessage
+import com.bot4s.telegram.methods.ParseMode
 import com.github.awant.habrareader.BotConfig
 import com.github.awant.habrareader.models.Post
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
+import cats.instances.future._
+import cats.syntax.functor._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,26 +33,7 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
 
   import ExecutionContext.Implicits.global
 
-  private val bot = {
-    val bot = TgBot(botConfig)
-
-    bot.onCommand(_.cmd.equals("subscribe")) { msg =>
-      Future { self ! Subscription(msg.chat.id, set=true) }
-    }
-
-    bot.onCommand(_.cmd.equals("unsubscribe")) { msg =>
-      Future { self ! Subscription(msg.chat.id, set=false) }
-    }
-
-    bot.onCommand(_.cmd.equals("settings")) { msg =>
-      Future { self ! Settings(msg.chat.id) }
-    }
-
-    bot.onCommand(_.cmd.startsWith("set")) { msg =>
-      Future { self ! SettingsUpd(msg.chat.id, msg.text.get) }
-    }
-    bot
-  }
+  private val bot = ObservableTgBot(botConfig, self)
 
   override def preStart(): Unit = {
     library ! LibraryActor.BotSubscription(self)
@@ -74,15 +58,59 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
   }
 }
 
-object TgBot {
-  LoggerConfig.factory = PrintLoggerFactory()
-  LoggerConfig.level = LogLevel.TRACE
+class TgBot(override val client: RequestHandler[Future]) extends TelegramBot with Polling with Commands[Future]
 
-  def apply(botConfig: BotConfig)(implicit ec: ExecutionContext): TgBot = {
-    val proxy = if (botConfig.proxy.ip.isEmpty) Proxy.NO_PROXY else
-      new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(botConfig.proxy.ip, botConfig.proxy.port))
-    new TgBot(new ScalajHttpClient(botConfig.token, proxy))
+class ObservableTgBot(override val client: RequestHandler[Future], observer: ActorRef) extends TgBot(client) {
+  import TgBotActor._
+
+  onCommand('subscribe) { msg =>
+    Future { observer ! Subscription(msg.chat.id, set=true) }
+  }
+
+  onCommand('unsubscribe) { msg =>
+    Future { observer ! Subscription(msg.chat.id, set=false) }
+  }
+
+  onCommand('settings) { msg =>
+    Future { observer ! Settings(msg.chat.id) }
+  }
+
+  onCommand('reset) { msg =>
+    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+  }
+
+  onCommand('clear) { msg =>
+    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+  }
+
+  onCommand(_.cmd.startsWith("set")) { msg =>
+    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+  }
+
+  onCommand('start | 'help) { implicit msg =>
+    reply(
+      s"""Subscription to habrahabr updates with custom filtering
+         |/start | /help - list commands
+         |/subscribe - subscribe to receive new articles
+         |/unsubscribe - unsubscribe
+         |/settings - get all settings
+         |/reset - set all settings to default values (subscription to all authors)
+         |/clear - drop all settings to null, unsubscribe
+         |/setExcludedAuthor - don't receive articles from the author
+         |/setExcludedCategory - don't receive articles from the category
+         |/setAuthor - receive articles from the author
+         |/setCategory - receive articles from the category
+      """.stripMargin, Option(ParseMode.Markdown)).void
   }
 }
 
-class TgBot(override val client: RequestHandler[Future]) extends TelegramBot with Polling with Commands[Future]
+object ObservableTgBot {
+  LoggerConfig.factory = PrintLoggerFactory()
+  LoggerConfig.level = LogLevel.TRACE
+
+  def apply(botConfig: BotConfig, observer: ActorRef)(implicit ec: ExecutionContext): ObservableTgBot = {
+    val proxy = if (botConfig.proxy.ip.isEmpty) Proxy.NO_PROXY else
+      new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(botConfig.proxy.ip, botConfig.proxy.port))
+    new ObservableTgBot(new ScalajHttpClient(botConfig.token, proxy), observer)
+  }
+}

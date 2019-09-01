@@ -43,8 +43,8 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
     case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
       chatData.updateSubscription(chatId, subscribe).onComplete {
-        case Success(_) => _
-        case Failure(_) => _
+        case Success(_) => Nil
+        case Failure(_) => Nil
     }
     case SettingsGetting(chatId) =>
       chatData.getChatSettings(chatId).onComplete {

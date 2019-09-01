@@ -24,12 +24,8 @@ class ChatData(chatCollection: MongoCollection[Chat],
       options).toFuture
   }
 
-  def getChatSettings(id: Long): Future[String] = {
-    chatCollection.find(Document("id" -> id))
-      .first
-      .head
-      .map("subscription: " + _.subscription)
-  }
+  def getChatSettings(id: Long): Future[String] =
+    chatCollection.find(Document("id" -> id)).first.head.map(_.getSettingsPrettify)
 
   private def predicate(chat: Chat, post: Post): Boolean = {
     true
@@ -44,8 +40,8 @@ class ChatData(chatCollection: MongoCollection[Chat],
 
   def save(posts: Seq[Post]): Unit = {
     postCollection.insertMany(posts).toFuture().onComplete{
-      case Success(_) => _
-      case Failure(err) => _
+      case Success(_) => Nil
+      case Failure(err) => Nil
     }
   }
 
