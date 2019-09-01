@@ -13,15 +13,14 @@ import com.mongodb.client.model.UpdateOptions
 import scala.util.{Failure, Success}
 
 class ChatData(chatCollection: MongoCollection[Chat],
-               postCollection: MongoCollection[Post],
-               eventCollection: MongoCollection[Event])(implicit ec: ExecutionContext) {
+               postCollection: MongoCollection[Post])(implicit ec: ExecutionContext) {
 
   def updateSubscription(id: Long, subscription: Boolean): Future[UpdateResult] = {
     val options = new UpdateOptions().upsert(true)
     chatCollection.updateOne(Document("id" -> id),
       Document("$set" -> Document(
         "subscription" -> subscription,
-        "created_date" -> DateUtils.currentDateStr())), // last update time
+        "createdDate" -> DateUtils.currentDate)), // last updated time
       options).toFuture
   }
 
@@ -38,17 +37,16 @@ class ChatData(chatCollection: MongoCollection[Chat],
 
   def getUpdates(fromDate: Date): Future[Seq[(Chat, Post)]] = {
     val chats = chatCollection.find(Document("subscription" -> true))
-    val posts = postCollection.find(Document("update" -> Document("$gt" -> DateUtils.convertToStr(fromDate))))
+    val posts = postCollection.find(Document("updateDate" -> Document("$gt" -> fromDate)))
 
     chats.flatMap(chat => posts.map(post => (chat, post)).filter{case (c, p) => predicate(c, p)}).toFuture()
   }
 
   def save(posts: Seq[Post]): Unit = {
-    println("--- POSTS --- ")
-    println(posts)
     postCollection.insertMany(posts).toFuture().onComplete{
-      case Success(_) => println("saved")
-      case Failure(err) => println("failure", err)
+      case Success(_) => _
+      case Failure(err) => _
     }
   }
+
 }

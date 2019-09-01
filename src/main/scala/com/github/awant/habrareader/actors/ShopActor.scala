@@ -21,7 +21,7 @@ object ShopActor {
 class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) extends Actor {
   import ShopActor._
 
-  val lastTimeUpdate: Date = DateUtils.currentDate
+  var lastTimeUpdate: Date = DateUtils.currentDate
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(0.second, updatePostsInterval, self, UpdatePosts)
@@ -32,12 +32,12 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
   }
 
   def updatePosts(): Unit = {
-//    val from = lastTimeUpdate
-//    val to = DateUtils.add(from, updatePostsInterval)
-    val to = DateUtils.currentDate
-    val from = DateUtils.yesterday
+    val from = lastTimeUpdate
+    val to = DateUtils.add(from, updatePostsInterval)
 
     val habrArticles = HabrArticlesDownloader.get(from, to)
+
+    lastTimeUpdate = DateUtils.add(lastTimeUpdate, updatePostsInterval)
 
     val posts = habrArticles.map(article => models.Post(
       link = article.link,

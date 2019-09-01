@@ -12,8 +12,8 @@ package object habrareader {
   val defaultMongoConfigPath: String = "application.conf"
   val localMongoConfigPath: String = "applicationLocal.conf"
 
-  val articlesUpdateTime: FiniteDuration = 5.minutes
-  val chatsUpdateTime: FiniteDuration = 10.seconds
+  val articlesUpdateTime: FiniteDuration = 10.minutes
+  val chatsUpdateTime: FiniteDuration = 20.minutes
 
   final case class ProxyConfig(ip: String, port: Int)
   final case class BotConfig(isOnServer: Boolean, token: String, proxy: ProxyConfig)

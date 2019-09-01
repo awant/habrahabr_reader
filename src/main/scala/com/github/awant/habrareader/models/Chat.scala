@@ -12,16 +12,16 @@ object Chat {
   implicit val encoder: Encoder[Chat] = (chat: Chat) => {
     Json.obj(
       "id" -> chat.id.asJson,
-      "created_date" -> DateUtils.convertToStr(chat.createdDate).asJson,
-      "subscription" -> chat.subscription.asJson
+      "subscription" -> chat.subscription.asJson,
+      "createdDate" -> DateUtils.convertToStr(chat.createdDate).asJson
     )
   }
 
   implicit val decoder: Decoder[Chat] = (c: HCursor) => {
     for {
       id <- c.downField("id").as[Long]
-      createdDate <- c.downField("created_date").as[String]
       subscription <- c.downField("subscription").as[Boolean]
+      createdDate <- c.downField("createdDate").as[String]
     } yield Chat(id, DateUtils.convertToDate(createdDate), subscription)
   }
 }

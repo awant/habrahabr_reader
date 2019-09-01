@@ -2,8 +2,6 @@ package com.github.awant.habrareader.loaders
 
 import java.util.Date
 
-import com.github.awant.habrareader.utils.DateUtils
-
 /** some kind of id */
 case class HabrArticleImprint(link: String, publicationDate: Date) {
   override def toString: String = s"link: $link; date: $publicationDate"

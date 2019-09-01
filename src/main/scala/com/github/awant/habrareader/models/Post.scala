@@ -28,7 +28,7 @@ object Post {
       "views" -> post.viewsCount.asJson,
       "comments" -> post.commentsCount.asJson,
       "bookmarks" -> post.bookmarksCount.asJson,
-      "update_date" -> DateUtils.convertToStr(post.updateDate).asJson
+      "updateDate" -> DateUtils.convertToStr(post.updateDate).asJson
     )
   }
 
@@ -43,7 +43,7 @@ object Post {
       viewsCount <- c.downField("views").as[Int]
       commentsCount <- c.downField("comments").as[Int]
       bookmarksCount <- c.downField("bookmarks").as[Int]
-      updateDate <- c.downField("update_date").as[String]
+      updateDate <- c.downField("updateDate").as[String]
     } yield Post(
       link, title, description, author, upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
       DateUtils.convertToDate(updateDate)

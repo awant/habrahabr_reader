@@ -57,10 +57,10 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
   }
 
   private def formMessage(post: Post): String = {
-    s"""author: *${post.author}*
-         |up votes: *${post.upVotes}*
-         |down votes: *${post.downVotes}*
-         |*${post.viewsCount}* views, *${post.bookmarksCount}* bookmarks, *${post.commentsCount}* comments
+    s"""author: ${post.author}
+         |up votes: ${post.upVotes}
+         |down votes: ${post.downVotes}
+         |*${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
          |${post.link}
       """.stripMargin
   }

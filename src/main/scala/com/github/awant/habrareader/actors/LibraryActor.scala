@@ -32,8 +32,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
-//  var lastUpdateDate: Date = DateUtils.currentDate
-  var lastUpdateDate: Date = DateUtils.yesterday
+  var lastUpdateDate: Date = DateUtils.currentDate
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(subscriptionReplyInterval, subscriptionReplyInterval, self, NewPostsSending)
@@ -42,7 +41,11 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
   override def receive: Receive = {
     case BotSubscription(subscriber) => subscribedBot = subscriber
 
-    case SubscriptionChanging(chatId: Long, subscribe: Boolean) => chatData.updateSubscription(chatId, subscribe)
+    case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
+      chatData.updateSubscription(chatId, subscribe).onComplete {
+        case Success(_) => _
+        case Failure(_) => _
+    }
     case SettingsGetting(chatId) =>
       chatData.getChatSettings(chatId).onComplete {
         case Success(settings) => subscribedBot ! Reply(chatId, settings)
