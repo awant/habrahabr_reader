@@ -68,6 +68,6 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
         case Failure(e) => log.error(s"$e")
       }
       lastUpdateDate = DateUtils.add(lastUpdateDate, subscriptionReplyInterval)
-    case PostsUpdating(posts) => chatData.save(posts)
+    case PostsUpdating(posts) => chatData.updatePosts(posts)
   }
 }

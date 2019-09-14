@@ -71,9 +71,7 @@ class ExternalSuite extends FunSuite {
   }
 
   test("download articles") {
-    val from = DateUtils.yesterday
-    val to = DateUtils.currentDate
-    val article = HabrArticlesDownloader.get(from, to)
+    val article = HabrArticlesDownloader.getArticles()
     article.foreach(println)
   }
 }
