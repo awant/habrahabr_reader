@@ -22,14 +22,14 @@ object AppConfig {
   def asUntyped: Config = untyped
 
   private lazy val untyped: Config = {
-    val configsNames: Array[String] =
-      sys.env.get("HABRA_READER_CONFIG").map(_.split(",")).getOrElse(
-        Array[String](
-          "botLocal.conf",
-          "mongoLocal.conf",
-          "app.conf"
-        )
-      )
+    val configsNames: Seq[String] = {
+      val isServer = sys.env.get("HABRA_READER_SERVER").isDefined
+
+      if (isServer)
+        Seq("prod.conf", "application.conf")
+      else
+        Seq("local.conf", "application.conf")
+    }
 
     configsNames.map(ConfigFactory.load).reduce(_.withFallback(_))
   }
