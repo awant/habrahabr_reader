@@ -2,6 +2,8 @@ package com.github.awant.habrareader
 
 import com.typesafe.config.{Config, ConfigFactory}
 
+import pureconfig.generic.auto._
+
 object AppConfig {
 
   final case class AppConfig(tgbot: TgBotActorConfig,
@@ -10,13 +12,9 @@ object AppConfig {
                              mongo: MongoConfig)
 
   final case class ProxyConfig(ip: String, port: Int)
-
   final case class TgBotActorConfig(token: String, proxy: ProxyConfig)
-
   final case class ShopActorConfig(articlesUpdateTimeSeconds: Int)
-
   final case class LibraryActorConfig(chatsUpdateTimeSeconds: Int)
-
   final case class MongoConfig(uri: String, database: String)
 
   def apply(): AppConfig = config
