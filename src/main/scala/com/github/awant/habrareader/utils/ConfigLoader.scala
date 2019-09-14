@@ -4,7 +4,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import pureconfig.ConfigReader
 
 object ConfigLoader {
-  private def isResourceExists(name: String): Boolean = getClass.getClassLoader.getResource(name) != null
+  def isResourceExists(name: String): Boolean = getClass.getClassLoader.getResource(name) != null
 
   def getConfig(defaultPath: String, localPath: String = ""): Config = {
     val conf = ConfigFactory.load(defaultPath)

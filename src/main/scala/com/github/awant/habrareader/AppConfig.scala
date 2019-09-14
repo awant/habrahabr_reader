@@ -1,7 +1,7 @@
 package com.github.awant.habrareader
 
+import com.github.awant.habrareader.utils.ConfigLoader
 import com.typesafe.config.{Config, ConfigFactory}
-
 import pureconfig.generic.auto._
 
 object AppConfig {
@@ -15,23 +15,23 @@ object AppConfig {
   final case class TgBotActorConfig(token: String, proxy: ProxyConfig)
   final case class ShopActorConfig(articlesUpdateTimeSeconds: Int)
   final case class LibraryActorConfig(chatsUpdateTimeSeconds: Int)
-  final case class MongoConfig(uri: String, database: String)
+  final case class MongoConfig(uri: String, database: String, writeLogs: Boolean)
 
   def apply(): AppConfig = config
 
   def asUntyped: Config = untyped
 
   private lazy val untyped: Config = {
-    val configsNames: Seq[String] = {
+    val configNames: Seq[String] = {
       val isServer = sys.env.get("HABRA_READER_SERVER").isDefined
 
       if (isServer)
         Seq("prod.conf", "application.conf")
       else
         Seq("local.conf", "application.conf")
-    }
+    }.filter(ConfigLoader.isResourceExists)
 
-    configsNames.map(ConfigFactory.load).reduce(_.withFallback(_))
+    configNames.map(ConfigFactory.load).reduce(_.withFallback(_))
   }
 
   private lazy val config: AppConfig = {
