@@ -23,8 +23,8 @@ object AppConfig {
 
   private lazy val untyped: Config = {
     val configsNames: Seq[String] =
-      sys.env.get("HABRA_READER_CONFIG").map(Seq(_)).getOrElse(
-        Seq(
+      sys.env.get("HABRA_READER_CONFIG").map(_.split(",")).getOrElse(
+        Array(
           "botLocal.conf",
           "mongoLocal.conf",
           "app.conf"
