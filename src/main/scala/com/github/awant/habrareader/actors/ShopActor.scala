@@ -4,6 +4,7 @@ import java.util.Date
 
 import scala.concurrent.duration._
 import akka.actor.{Actor, ActorRef, Props}
+import com.github.awant.habrareader.AppConfig.ShopActorConfig
 import com.github.awant.habrareader.models
 import com.github.awant.habrareader.loaders.HabrArticlesDownloader
 import com.github.awant.habrareader.utils.DateUtils
@@ -12,8 +13,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object ShopActor {
-  def props(updatePostsInterval: FiniteDuration, library: ActorRef): Props =
-    Props(new ShopActor(updatePostsInterval, library))
+  def props(config: ShopActorConfig, library: ActorRef): Props =
+    Props(new ShopActor(config.articlesUpdateTimeSeconds.seconds, library))
 
   final case class UpdatePosts()
 }
@@ -53,5 +54,4 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
       updateDate = DateUtils.currentDate))
     library ! LibraryActor.PostsUpdating(posts)
   }
-
 }

@@ -3,10 +3,10 @@ package com.github.awant.habrareader.actors
 import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import com.github.awant.habrareader.AppConfig.LibraryActorConfig
 import com.github.awant.habrareader.actors.TgBotActor.{PostReply, Reply}
 import com.github.awant.habrareader.models
 import com.github.awant.habrareader.models.Chat
-import com.github.awant.habrareader.utils.ChangeCommand.ChangeCommand
 import com.github.awant.habrareader.utils.{ChangeCommand, DateUtils, SettingsRequestParser}
 
 import scala.concurrent.duration._
@@ -15,8 +15,8 @@ import scala.util.{Failure, Success}
 
 
 object LibraryActor {
-  def props(subscriptionReplyInterval: FiniteDuration, chatData: models.ChatData): Props =
-    Props(new LibraryActor(subscriptionReplyInterval, chatData))
+  def props(config: LibraryActorConfig, chatData: models.ChatData): Props =
+    Props(new LibraryActor(config.chatsUpdateTimeSeconds.seconds, chatData))
 
   final case class BotSubscription(subscriber: ActorRef)
 
@@ -45,7 +45,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
     case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
       chatData.updateSubscription(chatId, subscribe).onComplete {
-        case Success(_) => Nil
+        case Success(_) =>
         case Failure(err) => println(err)
     }
     case SettingsChanging(chatId: Long, cmd: String) =>
