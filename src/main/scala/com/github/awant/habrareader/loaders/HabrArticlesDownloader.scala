@@ -3,15 +3,15 @@ package com.github.awant.habrareader.loaders
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale, TimeZone}
 
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
-import net.ruippeixotog.scalascraper.scraper.ContentExtractors.{element, elementList}
 import com.github.awant.habrareader.Implicits._
+import net.ruippeixotog.scalascraper.browser.JsoupBrowser
+import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
+import net.ruippeixotog.scalascraper.dsl.DSL._
+import net.ruippeixotog.scalascraper.scraper.ContentExtractors.{element, elementList}
 
 import scala.io.Source
 import scala.util.{Success, Try}
 import scala.xml.XML
-import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
-import net.ruippeixotog.scalascraper.dsl.DSL._
 
 
 object HabrArticlesDownloader {
@@ -101,11 +101,9 @@ object HabrArticlesDownloader {
     setTimeZone(TimeZone.getTimeZone("GMT"))
   }
 
-  def get(from: Date, to: Date): Seq[HabrArticle] = {
-    val imprints = downloadRSSArticles
-      .filter(imprint => (from.compareTo(imprint.publicationDate) <= 0) & (to.compareTo(imprint.publicationDate) > 0))
-    imprints.map(imprint => Try(downloadArticle(imprint.link, imprint.publicationDate))).collect{case Success(s) => s}
-  }
+  def getArticles(): Seq[HabrArticle] =
+    downloadRSSArticles.map { imprint =>
+      Try{downloadArticle(imprint.link, imprint.publicationDate)} }.collect { case Success(s) => s }
 
   def update(link: String, pubDate: Date): HabrArticle = downloadArticle(link, pubDate)
 }

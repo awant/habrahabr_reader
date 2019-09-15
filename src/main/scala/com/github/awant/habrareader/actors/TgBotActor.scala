@@ -9,17 +9,17 @@ import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
 import com.bot4s.telegram.methods.SendMessage
 import com.bot4s.telegram.methods.ParseMode
-import com.github.awant.habrareader.BotConfig
 import com.github.awant.habrareader.models.Post
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
 import cats.instances.future._
 import cats.syntax.functor._
+import com.github.awant.habrareader.AppConfig.TgBotActorConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 object TgBotActor {
-  def props(botConfig: BotConfig, library: ActorRef) = Props(new TgBotActor(botConfig, library))
+  def props(config: TgBotActorConfig, library: ActorRef) = Props(new TgBotActor(config, library))
 
   final case class Subscription(chatId: Long, set: Boolean)
   final case class Settings(chatId: Long)
@@ -28,7 +28,7 @@ object TgBotActor {
   final case class PostReply(chatId: Long, post: Post)
 }
 
-class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor with ActorLogging {
+class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends Actor with ActorLogging {
   import TgBotActor._
 
   import ExecutionContext.Implicits.global
@@ -54,7 +54,7 @@ class TgBotActor private(botConfig: BotConfig, library: ActorRef) extends Actor 
     case Settings(chatId) => library ! LibraryActor.SettingsGetting(chatId)
     case SettingsUpd(chatId, body) => library ! LibraryActor.SettingsChanging(chatId, body)
     case Reply(chatId, msg) => bot.request(SendMessage(chatId, msg))
-        case PostReply(chatId, post) => bot.request(SendMessage(chatId, formMessage(post)))
+    case PostReply(chatId, post) => bot.request(SendMessage(chatId, formMessage(post)))
   }
 }
 
@@ -108,7 +108,7 @@ object ObservableTgBot {
   LoggerConfig.factory = PrintLoggerFactory()
   LoggerConfig.level = LogLevel.TRACE
 
-  def apply(botConfig: BotConfig, observer: ActorRef)(implicit ec: ExecutionContext): ObservableTgBot = {
+  def apply(botConfig: TgBotActorConfig, observer: ActorRef)(implicit ec: ExecutionContext): ObservableTgBot = {
     val proxy = if (botConfig.proxy.ip.isEmpty) Proxy.NO_PROXY else
       new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(botConfig.proxy.ip, botConfig.proxy.port))
     new ObservableTgBot(new ScalajHttpClient(botConfig.token, proxy), observer)

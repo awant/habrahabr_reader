@@ -3,15 +3,17 @@ package com.github.awant.habrareader.models
 import java.util.Date
 
 import org.mongodb.scala._
+import org.mongodb.scala.model.{ReplaceOptions, UpdateOptions}
+import org.mongodb.scala.result.UpdateResult
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
-import org.mongodb.scala.result.UpdateResult
-import com.mongodb.client.model.{ReplaceOptions, UpdateOptions}
-
 import scala.util.{Failure, Success}
 
 class ChatData(chatCollection: MongoCollection[Chat],
                postCollection: MongoCollection[Post])(implicit ec: ExecutionContext) {
+
+  private val log = LoggerFactory.getLogger(classOf[ChatData])
 
   def updateSubscription(id: Long, subscription: Boolean): Future[UpdateResult] = {
     val options = new ReplaceOptions().upsert(true)
@@ -51,14 +53,17 @@ class ChatData(chatCollection: MongoCollection[Chat],
     val chats = chatCollection.find(Document("subscription" -> true))
     val posts = postCollection.find(Document("updateDate" -> Document("$gt" -> fromDate)))
 
-    chats.flatMap(chat => posts.map(post => (chat, post)).filter{case (c, p) => predicate(c, p)}).toFuture()
+    chats.flatMap(chat => posts.map(post => (chat, post)).filter { case (c, p) => predicate(c, p) }).toFuture()
   }
 
-  def save(posts: Seq[Post]): Unit = {
-    postCollection.insertMany(posts).toFuture().onComplete{
-      case Success(_) => Nil
-      case Failure(_) => Nil
+  def updatePosts(posts: Seq[Post]): Unit =
+    posts.foreach(updatePost)
+
+  def updatePost(post: Post): Unit =
+    postCollection
+      .replaceOne(Document("link" -> post.link), post, ReplaceOptions().upsert(true))
+      .toFuture().onComplete {
+      case Success(value) => log.debug(s"update post ${post.link}: $value")
+      case Failure(exception) => log.error(s"can't update post ${post.link}: $exception")
     }
-  }
-
 }
