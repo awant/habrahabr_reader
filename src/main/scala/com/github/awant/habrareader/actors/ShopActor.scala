@@ -35,6 +35,7 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
     val habrArticles = HabrArticlesDownloader.getArticles()
 
     val posts = habrArticles.map(article => models.Post(
+      id = article.id,
       link = article.link,
       title = article.title,
       description = article.description,

@@ -3,6 +3,9 @@ package com.github.awant.habrareader.utils
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
+import io.circe.{Decoder, Encoder}
+import io.circe.syntax._
+
 import scala.concurrent.duration.FiniteDuration
 
 
@@ -27,4 +30,8 @@ object DateUtils {
   }
 
   def yesterday: Date = addDays(currentDate, -1)
+
+  implicit val dateEncoder: Encoder[Date] = (date: Date) => DateUtils.convertToStr(date).asJson
+
+  implicit val dateDecoder: Decoder[Date] = Decoder[String].map(DateUtils.convertToDate(_))
 }

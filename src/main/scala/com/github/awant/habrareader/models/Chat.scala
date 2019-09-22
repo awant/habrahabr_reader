@@ -1,13 +1,13 @@
 package com.github.awant.habrareader.models
 
-import com.github.awant.habrareader.utils.DateUtils
 import java.util.Date
 
-import io.circe.syntax._
+import com.github.awant.habrareader.utils.DateUtils
+import com.github.awant.habrareader.utils.DateUtils._
 import io.circe._
-
-import org.bson.{BsonReader, BsonWriter}
+import io.circe.syntax._
 import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
+import org.bson.{BsonReader, BsonWriter}
 
 
 sealed class ChatScope {
@@ -52,8 +52,8 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
 
   def getSettingsPrettify: String = {
     s"""subscription: $subscription
-      |authors: $formAuthorsScope
-      |categories: $formCategoriesScope
+       |authors: $formAuthorsScope
+       |categories: $formCategoriesScope
     """.stripMargin
   }
 }
@@ -81,17 +81,17 @@ object Chat {
 
   implicit val encoder: Encoder[Chat] = (chat: Chat) => {
     Json.obj(
-      "id" -> chat.id.asJson,
-      "lastUpdateDate" -> DateUtils.convertToStr(chat.lastUpdateDate).asJson,
-      "subscription" -> chat.subscription.asJson,
+      "id" := chat.id,
+      "lastUpdateDate" := chat.lastUpdateDate,
+      "subscription" := chat.subscription,
 
-      "authorsScope" -> chat.authorsScope.chatScopeType.asJson,
-      "authors" -> chat.authors.asJson,
-      "excludedAuthors" -> chat.excludedAuthors.asJson,
+      "authorsScope" := chat.authorsScope.chatScopeType,
+      "authors" := chat.authors,
+      "excludedAuthors" := chat.excludedAuthors,
 
-      "categoryScope" -> chat.categoryScope.chatScopeType.asJson,
-      "categories" -> chat.categories.asJson,
-      "excludedCategories" -> chat.excludedCategories.asJson,
+      "categoryScope" := chat.categoryScope.chatScopeType,
+      "categories" := chat.categories,
+      "excludedCategories" := chat.excludedCategories,
     )
   }
 
