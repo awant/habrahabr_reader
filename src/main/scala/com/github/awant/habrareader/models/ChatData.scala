@@ -24,7 +24,7 @@ class ChatData(chatCollection: MongoCollection[Chat],
 
   private val log = LoggerFactory.getLogger(classOf[ChatData])
 
-  def updateSubscription(id: Long, subscription: Boolean) =
+  def updateSubscription(id: Long, subscription: Boolean): Future[result.UpdateResult] =
     updateChat(id)(_.copy(subscription = subscription))
 
   def replaceChat(chat: Chat): Future[Chat] =

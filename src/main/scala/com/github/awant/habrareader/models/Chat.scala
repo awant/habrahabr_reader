@@ -17,7 +17,7 @@ case class Chat(id: Long,
 
   private def prettyMap(map: Map[String, Double]): String =
     if (map.nonEmpty)
-      map.toList.map { case (name, weight) => s"- ${name}: ${weight}" }.mkString("\n", "\n", "\n")
+      map.toList.map { case (name, weight) => s"- ${name}: ${weight}" }.mkString("\n", "\n", "")
     else
       ""
 
