@@ -16,11 +16,11 @@ object Event {
 
   implicit val encoder: Encoder[Event] = (event: Event) => {
     Json.obj(
-      "id" -> event.id.asJson,
-      "chatId" -> event.chatId.asJson,
-      "messageId" -> event.messageId.asJson,
-      "postId" -> event.postId.asJson,
-      "update" -> event.update.asJson,
+      "id" := event.id,
+      "chatId" := event.chatId,
+      "messageId" := event.messageId,
+      "postId" := event.postId,
+      "update" := event.update,
     )
   }
 
