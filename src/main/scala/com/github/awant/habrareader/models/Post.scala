@@ -17,7 +17,9 @@ case class Post(link: String,
                 viewsCount: Int,
                 commentsCount: Int,
                 bookmarksCount: Int,
-                updateDate: Date)
+                updateDate: Date) {
+  val id: Long = link.filter(_.isDigit).toLong
+}
 
 object Post {
   implicit val encoder: Encoder[Post] = (post: Post) => {
