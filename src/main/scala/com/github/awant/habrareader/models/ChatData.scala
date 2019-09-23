@@ -11,7 +11,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class ChatData(chatCollection: MongoCollection[Chat],
-               postCollection: MongoCollection[Post])(implicit ec: ExecutionContext) {
+               postCollection: MongoCollection[Post],
+               eventCollection: MongoCollection[Event])(implicit ec: ExecutionContext) {
 
   private val log = LoggerFactory.getLogger(classOf[ChatData])
 
@@ -66,4 +67,10 @@ class ChatData(chatCollection: MongoCollection[Chat],
       case Success(value) => log.debug(s"update post ${post.link}: $value")
       case Failure(exception) => log.error(s"can't update post ${post.link}: $exception")
     }
+
+  def getEvents(fromDate: Date): Future[Seq[Event]] =
+    eventCollection.find(Document("update" -> Document("$gt" -> fromDate))).toFuture()
+
+  def addEvent(event: Event): Future[Completed] =
+    eventCollection.insertOne(event).toFuture()
 }
