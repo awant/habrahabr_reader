@@ -19,8 +19,6 @@ object Event {
     )
   }
 
-  implicitly[Decoder[Long]]
-
   implicit val decoder: Decoder[Event] = (c: HCursor) => {
     for {
       chatId <- c.get[Long]("chatId")
