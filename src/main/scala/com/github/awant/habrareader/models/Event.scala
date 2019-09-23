@@ -24,11 +24,11 @@ object Event {
 
   implicit val decoder: Decoder[Event] = (c: HCursor) => {
     for {
-      id <- c.downField("id").as[Long]
-      chatId <- c.downField("chatId").as[Long]
-      messageId <- c.downField("messageId").as[Long]
-      postId <- c.downField("postId").as[Long]
-      update <- c.downField("update").as[Date]
+      id <- c.get[Long]("id")
+      chatId <- c.get[Long]("chatId")
+      messageId <- c.get[Long]("messageId")
+      postId <- c.get[Long]("postId")
+      update <- c.get[Date]("update")
     } yield Event(id, chatId, messageId, postId, update)
   }
 }
