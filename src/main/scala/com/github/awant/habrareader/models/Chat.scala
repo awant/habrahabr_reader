@@ -10,19 +10,18 @@ import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
 import org.bson.{BsonReader, BsonWriter}
 
 
-sealed class ChatScope {
-  def chatScopeType: String = ""
-}
-
-case class ChatScopeAll() extends ChatScope { override val chatScopeType: String = "all" }
-case class ChatScopeNone() extends ChatScope { override val chatScopeType: String = "" }
+case class ChatScope(chatScopeType: String)
 
 object ChatScope {
-  def fromString(scope: String): ChatScope = {
-    if (scope == ChatScopeAll().chatScopeType) ChatScopeAll()
-    else if (scope == ChatScopeNone().chatScopeType) ChatScopeNone()
-    else throw new IllegalArgumentException("illegal scope argument")
-  }
+  val all = ChatScope("all")
+  val none = ChatScope("")
+
+  def fromString(scope: String): ChatScope =
+    scope match {
+      case  ChatScope.all.chatScopeType => ChatScope.all
+      case ChatScope.none.chatScopeType => ChatScope.none
+      case _ => throw new IllegalArgumentException("illegal scope argument")
+    }
 }
 
 class ChatScopeCodec extends Codec[ChatScope] {
@@ -43,8 +42,8 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
                 categoryScope: ChatScope, categories: Seq[String], excludedCategories: Seq[String]) {
 
   private def formScope(scope: ChatScope, values: Seq[String], excludedValues: Seq[String]): String = scope match {
-    case ChatScopeAll() => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
-    case ChatScopeNone() => scope.chatScopeType + values.mkString(", ")
+    case ChatScope.all => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
+    case ChatScope.none => scope.chatScopeType + values.mkString(", ")
     case _ => ""
   }
   private def formAuthorsScope: String = formScope(authorsScope, authors, excludedAuthors)
@@ -61,20 +60,20 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
 object Chat {
   def withDefaultSettings(id: Long, subscription: Boolean = true) = Chat(id, DateUtils.currentDate,
     subscription = subscription,
-    authorsScope = ChatScopeAll(),
+    authorsScope = ChatScope.all,
     authors = Seq[String](),
     excludedAuthors = Seq[String](),
-    categoryScope = ChatScopeAll(),
+    categoryScope = ChatScope.all,
     categories = Seq[String](),
     excludedCategories = Seq[String]()
   )
 
   def withEmptySettings(id: Long) = Chat(id, DateUtils.currentDate,
     subscription = false,
-    authorsScope = ChatScopeNone(),
+    authorsScope = ChatScope.none,
     authors = Seq[String](),
     excludedAuthors = Seq[String](),
-    categoryScope = ChatScopeNone(),
+    categoryScope = ChatScope.none,
     categories = Seq[String](),
     excludedCategories = Seq[String]()
   )
