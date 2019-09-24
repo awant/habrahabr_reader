@@ -17,7 +17,7 @@ import scala.util.{Failure, Success}
 
 object LibraryActor {
   def props(config: LibraryActorConfig, chatData: models.ChatData): Props =
-    Props(new LibraryActor(config.chatsUpdateTimeSeconds.seconds, chatData))
+    Props(new LibraryActor(config.chatsUpdateTimeSeconds.seconds, config.updateTgMessages, chatData))
 
   final case class BotSubscription(subscriber: ActorRef)
 
@@ -31,7 +31,7 @@ object LibraryActor {
   private final case class UpdateChatDataLastTime(date: Date)
 }
 
-class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.ChatData) extends Actor with ActorLogging {
+class LibraryActor(subscriptionReplyInterval: FiniteDuration, updateTgMessages: Boolean, chatData: models.ChatData) extends Actor with ActorLogging {
   import LibraryActor._
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
@@ -84,7 +84,9 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
             case ChatData.Update(chat, post, None) =>
               subscribedBot ! PostReply(chat.id, post)
             case ChatData.Update(chat, post, Some(prevMessageId)) =>
-              subscribedBot ! PostEdit(chat.id, prevMessageId, post)
+              if (updateTgMessages) {
+                subscribedBot ! PostEdit(chat.id, prevMessageId, post)
+              }
           }
         case Failure(e) => log.error(s"$e")
       }
