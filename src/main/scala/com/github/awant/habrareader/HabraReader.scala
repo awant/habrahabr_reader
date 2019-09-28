@@ -18,7 +18,7 @@ object HabraReader extends App {
   val mongo = new Mongo(AppConfig().mongo)
 
   val libraryActor = actorSystem.actorOf(LibraryActor.props(AppConfig().library,
-    new ChatData(mongo.chatCollection, mongo.postCollection)), "library")
+    new ChatData(mongo.chatCollection, mongo.postCollection, mongo.eventCollection)), "library")
   val shopActor = actorSystem.actorOf(ShopActor.props(AppConfig().shop, libraryActor), "shop")
   val tgBotActor = actorSystem.actorOf(TgBotActor.props(AppConfig().tgbot, libraryActor), "tgBot")
 }

@@ -7,13 +7,14 @@ import com.bot4s.telegram.api.RequestHandler
 import com.bot4s.telegram.api.declarative.Commands
 import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
-import com.bot4s.telegram.methods.SendMessage
-import com.bot4s.telegram.methods.ParseMode
-import com.github.awant.habrareader.models.Post
+import com.bot4s.telegram.methods.{EditMessageText, ParseMode, SendMessage}
+import com.github.awant.habrareader.models.{Event, Post}
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
 import cats.instances.future._
 import cats.syntax.functor._
 import com.github.awant.habrareader.AppConfig.TgBotActorConfig
+import com.github.awant.habrareader.actors.LibraryActor.PostWasSentToTg
+import akka.pattern.pipe
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -26,6 +27,7 @@ object TgBotActor {
   final case class SettingsUpd(chatId: Long, text: String)
   final case class Reply(chatId: Long, msg: String)
   final case class PostReply(chatId: Long, post: Post)
+  final case class PostEdit(chatId: Long, messageId: Int, post: Post)
 }
 
 class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends Actor with ActorLogging {
@@ -54,7 +56,12 @@ class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends
     case Settings(chatId) => library ! LibraryActor.SettingsGetting(chatId)
     case SettingsUpd(chatId, body) => library ! LibraryActor.SettingsChanging(chatId, body)
     case Reply(chatId, msg) => bot.request(SendMessage(chatId, msg))
-    case PostReply(chatId, post) => bot.request(SendMessage(chatId, formMessage(post)))
+    case PostReply(chatId, post) =>
+      bot.request(SendMessage(chatId, formMessage(post)))
+        .map(msg => PostWasSentToTg(Event( chatId, msg.messageId, post.id, post.updateDate)))
+        .pipeTo(sender)
+    case PostEdit(chatId, messageId, post) =>
+      bot.request(EditMessageText(Option(chatId), Option(messageId), text=formMessage(post)))
   }
 }
 
