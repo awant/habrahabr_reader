@@ -2,6 +2,7 @@ package com.github.awant.habrareader.models
 
 import java.util.Date
 
+import com.github.awant.habrareader.utils.DateUtils
 import org.mongodb.scala._
 import org.mongodb.scala.model.{ReplaceOptions, UpdateOptions}
 import org.mongodb.scala.result.UpdateResult
@@ -9,6 +10,14 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
+
+object ChatData {
+
+  case class Update(chat: Chat, post: Post, prevMessageId: Option[Int] = None) {
+    def date: Date = post.updateDate
+  }
+
+}
 
 class ChatData(chatCollection: MongoCollection[Chat],
                postCollection: MongoCollection[Post],
@@ -50,11 +59,36 @@ class ChatData(chatCollection: MongoCollection[Chat],
     else true
   }
 
-  def getUpdates(fromDate: Date): Future[Seq[(Chat, Post)]] = {
-    val chats = chatCollection.find(Document("subscription" -> true))
-    val posts = postCollection.find(Document("updateDate" -> Document("$gt" -> fromDate)))
+  private def getUpdates(chats: Seq[Chat], posts: Seq[Post], events: Seq[Event]): Seq[ChatData.Update] = {
+    def getLastPost(left: Post, right: Post): Post =
+      if (left.updateDate.after(right.updateDate)) left else right
 
-    chats.flatMap(chat => posts.map(post => (chat, post)).filter { case (c, p) => predicate(c, p) }).toFuture()
+    def getLastEvent(left: Event, right: Event): Event =
+      if (left.updateDate.after(right.updateDate)) left else right
+
+    val eventsByChat: Map[Long, Seq[Event]] = events.groupBy(_.chatId)
+
+    val lastPosts: Iterable[Post] = posts.groupBy(_.id).map { case (_, posts) =>
+      posts.reduce(getLastPost)
+    }
+
+    for {
+      chat <- chats
+      eventsByPostId = eventsByChat.getOrElse(chat.id, List()).groupBy(_.postId)
+      post <- lastPosts
+      relatedEvents = eventsByPostId.get(post.id)
+      if relatedEvents.nonEmpty || predicate(chat, post)
+    } yield ChatData.Update(chat, post, relatedEvents.map(_.reduce(getLastEvent).messageId))
+  }
+
+  def getUpdates(fromDate: Date): Future[Seq[ChatData.Update]] = {
+    val threeDaysBack = DateUtils.addDays(fromDate, -3)
+
+    for {
+      chats <- chatCollection.find(Document("subscription" -> true)).toFuture()
+      posts <- postCollection.find(Document("updateDate" -> Document("$gt" -> fromDate))).toFuture()
+      events <- eventCollection.find(Document("updateDate" -> Document("$gt" -> threeDaysBack))).toFuture()
+    } yield getUpdates(chats, posts, events)
   }
 
   def updatePosts(posts: Seq[Post]): Unit =
@@ -67,9 +101,6 @@ class ChatData(chatCollection: MongoCollection[Chat],
       case Success(value) => log.debug(s"update post ${post.link}: $value")
       case Failure(exception) => log.error(s"can't update post ${post.link}: $exception")
     }
-
-  def getEvents(fromDate: Date): Future[Seq[Event]] =
-    eventCollection.find(Document("update" -> Document("$gt" -> fromDate))).toFuture()
 
   def addEvent(event: Event): Future[Completed] =
     eventCollection.insertOne(event).toFuture()
