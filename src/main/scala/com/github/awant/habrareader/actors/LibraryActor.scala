@@ -67,17 +67,14 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
         case Success(settings) => subscribedBot ! Reply(chatId, settings)
         case Failure(_) => subscribedBot ! Reply(chatId, "Something was wrong, try again later")
       }
-    case NewPostsSending =>
-      processNewPostSending()
-    case UpdateChatDataLastTime(date) =>
-      chatDataLastTime = date
-    case PostsUpdating(posts) =>
-      chatData.updatePosts(posts)
-    case PostWasSentToTg(event) =>
-      chatData.addEvent(event)
+    case NewPostsSending => processNewPostSending()
+    case UpdateChatDataLastTime(date) => chatDataLastTime = date
+    case PostsUpdating(posts) => chatData.updatePosts(posts)
+    case PostWasSentToTg(event) => chatData.addEvent(event)
   }
 
   private def processNewPostSending(): Unit = {
+    log.debug("sending new posts")
     val currentLast = chatDataLastTime
 
     chatData.getUpdates(currentLast).onComplete {
