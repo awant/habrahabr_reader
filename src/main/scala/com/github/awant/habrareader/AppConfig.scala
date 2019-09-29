@@ -22,21 +22,12 @@ object AppConfig {
   def asUntyped: Config = untyped
 
   private lazy val untyped: Config = {
-    val configNames: Seq[String] = {
-      val isServer = sys.env.get("HABRA_READER_SERVER").isDefined
-
-      if (isServer)
-        Seq("prod.conf", "application.conf")
-      else
-        Seq("local.conf", "application.conf")
-    }.filter(ConfigLoader.isResourceExists)
-
-    configNames.map(ConfigFactory.load).reduce(_.withFallback(_))
+    val configPath = sys.env.getOrElse(configEnvKey, configDefaultPath)
+    ConfigFactory.load(configPath)
   }
 
   private lazy val config: AppConfig = {
     val loaded = pureconfig.loadConfig[AppConfig](untyped)
-    println(s"loaded config = $loaded")
     loaded.right.get
   }
 }
