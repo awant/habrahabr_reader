@@ -42,8 +42,8 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
                 categoryScope: ChatScope, category: Seq[String], excludedCategory: Seq[String]) {
 
   private def formScope(scope: ChatScope, values: Seq[String], excludedValues: Seq[String]): String = scope match {
-    case ChatScope.all => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
-    case ChatScope.none => scope.chatScopeType + values.mkString(", ")
+    case ChatScope.all => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.distinct.mkString(", ") else "")
+    case ChatScope.none => scope.chatScopeType + values.distinct.mkString(", ")
     case _ => ""
   }
   private def formAuthorsScope: String = formScope(authorScope, author, excludedAuthor)
