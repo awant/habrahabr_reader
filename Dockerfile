@@ -12,4 +12,4 @@ WORKDIR /habrahabrReader
 COPY . /habrahabrReader
 
 ENV HABRA_READER_CONFIG prom.conf
-CMD ["sbt", "run"]
+CMD sbt -mem 256 run
