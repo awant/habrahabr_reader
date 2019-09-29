@@ -7,6 +7,7 @@ import com.bot4s.telegram.api.RequestHandler
 import com.bot4s.telegram.api.declarative.Commands
 import com.bot4s.telegram.clients.ScalajHttpClient
 import com.bot4s.telegram.future.{Polling, TelegramBot}
+import com.bot4s.telegram.models
 import com.bot4s.telegram.methods.{EditMessageText, ParseMode, SendMessage}
 import com.github.awant.habrareader.models.{Event, Post}
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory}
@@ -32,7 +33,6 @@ object TgBotActor {
 
 class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends Actor with ActorLogging {
   import TgBotActor._
-
   import ExecutionContext.Implicits.global
 
   private val bot = ObservableTgBot(botConfig, self)
@@ -70,6 +70,8 @@ class TgBot(override val client: RequestHandler[Future]) extends TelegramBot wit
 class ObservableTgBot(override val client: RequestHandler[Future], observer: ActorRef) extends TgBot(client) {
   import TgBotActor._
 
+  def prepareCmdMsg(msg: models.Message): String = msg.text.get.trim().stripPrefix("/")
+
   onCommand('subscribe) { msg =>
     Future { observer ! Subscription(msg.chat.id, set=true) }
   }
@@ -83,15 +85,15 @@ class ObservableTgBot(override val client: RequestHandler[Future], observer: Act
   }
 
   onCommand('reset) { msg =>
-    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+    Future { observer ! SettingsUpd(msg.chat.id, prepareCmdMsg(msg)) }
   }
 
   onCommand('clear) { msg =>
-    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+    Future { observer ! SettingsUpd(msg.chat.id, prepareCmdMsg(msg)) }
   }
 
-  onCommand(_.cmd.startsWith("set")) { msg =>
-    Future { observer ! SettingsUpd(msg.chat.id, msg.text.get) }
+  onCommand(_.cmd.matches("^set[A-Z].*$")) { msg =>
+    Future { observer ! SettingsUpd(msg.chat.id, prepareCmdMsg(msg)) }
   }
 
   onCommand('start | 'help) { implicit msg =>

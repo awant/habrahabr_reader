@@ -51,11 +51,11 @@ class ChatData(chatCollection: MongoCollection[Chat],
 
   private def predicate(chat: Chat, post: Post): Boolean = {
     // filter by author
-    if ((chat.authorsScope == ChatScope.all) && chat.excludedAuthors.contains(post.author)) false
-    else if ((chat.authorsScope == ChatScope.none) && !chat.authors.contains(post.author)) false
+    if ((chat.authorScope == ChatScope.all) && chat.excludedAuthor.contains(post.author)) false
+    else if ((chat.authorScope == ChatScope.none) && !chat.author.contains(post.author)) false
     // filter by categories
-    else if ((chat.categoryScope == ChatScope.all) && post.categories.exists(chat.excludedCategories.contains)) false
-    else if ((chat.categoryScope == ChatScope.none) && post.categories.forall(!chat.categories.contains(_))) false
+    else if ((chat.categoryScope == ChatScope.all) && post.categories.exists(chat.excludedCategory.contains)) false
+    else if ((chat.categoryScope == ChatScope.none) && post.categories.forall(!chat.category.contains(_))) false
     else true
   }
 

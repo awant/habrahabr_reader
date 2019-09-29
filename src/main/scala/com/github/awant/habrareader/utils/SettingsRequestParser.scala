@@ -7,26 +7,26 @@ object ChangeCommand extends Enumeration {
   val RESET, CLEAR, SET, UNKNOWN = Value
 }
 
-case class SettingsRequestCmd(cmd: ChangeCommand, args: Seq[String] = Seq.empty)
+case class SettingsRequestCmd(cmd: ChangeCommand, args: Seq[String] = Seq.empty, err: String = "")
 
 
 object SettingsRequestParser {
   val availableSetCmds: Seq[String] = Seq(
-    "setExcludedAuthor",
-    "setExcludedCategory",
-    "setAuthor",
-    "setCategory"
+    "excludedAuthor",
+    "excludedCategory",
+    "author",
+    "category"
   )
-  val unknownSettingsRequestCmd = SettingsRequestCmd(ChangeCommand.UNKNOWN)
+  def wrongCommand(err: String): SettingsRequestCmd = SettingsRequestCmd(ChangeCommand.UNKNOWN, err = err)
 
   private def parseSetCmd(rawArgs: Seq[String]): SettingsRequestCmd = {
-    if (rawArgs.length != 2) unknownSettingsRequestCmd
+    if (rawArgs.length != 2) wrongCommand("'set' command should have one argument")
     else {
-      val cmd = rawArgs.head
-      if (!availableSetCmds.contains(cmd)) unknownSettingsRequestCmd
+      var cmd = rawArgs.head.substring(3)
+      cmd = cmd(0).toLower + cmd.tail
+      if (!availableSetCmds.contains(cmd)) wrongCommand("the command not available")
       else {
-        val cmdExt = StringUtils.decapitalize(cmd.substring(ChangeCommand.SET.toString.length))
-        SettingsRequestCmd(ChangeCommand.SET, Seq(cmdExt, rawArgs.tail.head))
+        SettingsRequestCmd(ChangeCommand.SET, Seq(cmd, rawArgs.tail.head))
       }
     }
   }
@@ -36,6 +36,6 @@ object SettingsRequestParser {
     case "clear" => SettingsRequestCmd(ChangeCommand.CLEAR)
     case _ =>
       if (rawCmd.startsWith("set")) parseSetCmd(rawCmd.split("\\s+"))
-      else unknownSettingsRequestCmd
+      else wrongCommand("the command should start with the 'set' key word")
   }
 }

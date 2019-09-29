@@ -52,9 +52,11 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
         case Failure(err) => println(err)
       }
     case SettingsChanging(chatId: Long, cmd: String) =>
+      log.debug(s"settingsChanging got: $cmd")
       val settingsCmd = SettingsRequestParser.parse(cmd)
+      log.debug(s"settingsChanging parsed: ${settingsCmd.toString}")
       settingsCmd.cmd match {
-        case ChangeCommand.UNKNOWN => Reply(chatId, "Unknown command")
+        case ChangeCommand.UNKNOWN => subscribedBot ! Reply(chatId, settingsCmd.err)
         case ChangeCommand.RESET => chatData.updateChat(Chat.withDefaultSettings(chatId))
         case ChangeCommand.CLEAR => chatData.updateChat(Chat.withEmptySettings(chatId))
         case ChangeCommand.SET => chatData.appendSettingToChat(chatId, settingsCmd.args.head, settingsCmd.args(1))
@@ -63,7 +65,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
     case SettingsGetting(chatId) =>
       chatData.getChatSettings(chatId).onComplete {
         case Success(settings) => subscribedBot ! Reply(chatId, settings)
-        case Failure(_) => subscribedBot ! Reply(chatId, "")
+        case Failure(_) => subscribedBot ! Reply(chatId, "Something was wrong, try again later")
       }
     case NewPostsSending =>
       processNewPostSending()

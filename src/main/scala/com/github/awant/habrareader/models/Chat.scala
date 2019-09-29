@@ -38,16 +38,16 @@ class ChatScopeCodec extends Codec[ChatScope] {
 }
 
 case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
-                authorsScope: ChatScope, authors: Seq[String], excludedAuthors: Seq[String],
-                categoryScope: ChatScope, categories: Seq[String], excludedCategories: Seq[String]) {
+                authorScope: ChatScope, author: Seq[String], excludedAuthor: Seq[String],
+                categoryScope: ChatScope, category: Seq[String], excludedCategory: Seq[String]) {
 
   private def formScope(scope: ChatScope, values: Seq[String], excludedValues: Seq[String]): String = scope match {
     case ChatScope.all => scope.chatScopeType + (if (excludedValues.nonEmpty) ", except: " + excludedValues.mkString(", ") else "")
     case ChatScope.none => scope.chatScopeType + values.mkString(", ")
     case _ => ""
   }
-  private def formAuthorsScope: String = formScope(authorsScope, authors, excludedAuthors)
-  private def formCategoriesScope: String = formScope(categoryScope, categories, excludedCategories)
+  private def formAuthorsScope: String = formScope(authorScope, author, excludedAuthor)
+  private def formCategoriesScope: String = formScope(categoryScope, category, excludedCategory)
 
   def getSettingsPrettify: String = {
     s"""subscription: $subscription
@@ -60,22 +60,22 @@ case class Chat(id: Long, lastUpdateDate: Date, subscription: Boolean,
 object Chat {
   def withDefaultSettings(id: Long, subscription: Boolean = true) = Chat(id, DateUtils.currentDate,
     subscription = subscription,
-    authorsScope = ChatScope.all,
-    authors = Seq[String](),
-    excludedAuthors = Seq[String](),
+    authorScope = ChatScope.all,
+    author = Seq[String](),
+    excludedAuthor = Seq[String](),
     categoryScope = ChatScope.all,
-    categories = Seq[String](),
-    excludedCategories = Seq[String]()
+    category = Seq[String](),
+    excludedCategory = Seq[String]()
   )
 
   def withEmptySettings(id: Long) = Chat(id, DateUtils.currentDate,
     subscription = false,
-    authorsScope = ChatScope.none,
-    authors = Seq[String](),
-    excludedAuthors = Seq[String](),
+    authorScope = ChatScope.none,
+    author = Seq[String](),
+    excludedAuthor = Seq[String](),
     categoryScope = ChatScope.none,
-    categories = Seq[String](),
-    excludedCategories = Seq[String]()
+    category = Seq[String](),
+    excludedCategory = Seq[String]()
   )
 
   implicit val encoder: Encoder[Chat] = (chat: Chat) => {
@@ -84,13 +84,13 @@ object Chat {
       "lastUpdateDate" := chat.lastUpdateDate,
       "subscription" := chat.subscription,
 
-      "authorsScope" := chat.authorsScope.chatScopeType,
-      "authors" := chat.authors,
-      "excludedAuthors" := chat.excludedAuthors,
+      "authorScope" := chat.authorScope.chatScopeType,
+      "author" := chat.author,
+      "excludedAuthor" := chat.excludedAuthor,
 
       "categoryScope" := chat.categoryScope.chatScopeType,
-      "categories" := chat.categories,
-      "excludedCategories" := chat.excludedCategories,
+      "category" := chat.category,
+      "excludedCategory" := chat.excludedCategory,
     )
   }
 
@@ -100,13 +100,13 @@ object Chat {
       lastUpdateDate <- c.downField("lastUpdateDate").as[String]
       subscription <- c.downField("subscription").as[Boolean]
 
-      authorsScope <- c.downField("authorsScope").as[String]
-      authors <- c.downField("authors").as[Seq[String]]
+      authorsScope <- c.downField("authorScope").as[String]
+      authors <- c.downField("author").as[Seq[String]]
       excludedAuthors <- c.downField("excludedAuthors").as[Seq[String]]
 
       categoryScope <- c.downField("categoryScope").as[String]
-      categories <- c.downField("categories").as[Seq[String]]
-      excludedCategories <- c.downField("excludedCategories").as[Seq[String]]
+      categories <- c.downField("category").as[Seq[String]]
+      excludedCategories <- c.downField("excludedCategory").as[Seq[String]]
 
     } yield Chat(
       id, DateUtils.convertToDate(lastUpdateDate), subscription,
