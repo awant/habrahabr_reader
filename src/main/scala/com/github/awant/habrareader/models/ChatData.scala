@@ -11,14 +11,6 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-object ChatData {
-
-  case class Update(chat: Chat, post: Post, prevMessageId: Option[Int] = None) {
-    def date: Date = post.updateDate
-  }
-
-}
-
 class ChatData(chatCollection: MongoCollection[Chat],
                postCollection: MongoCollection[Post],
                eventCollection: MongoCollection[Event])(implicit ec: ExecutionContext) {
@@ -59,49 +51,38 @@ class ChatData(chatCollection: MongoCollection[Chat],
     else true
   }
 
-  private def getUpdates(chats: Seq[Chat], posts: Seq[Post], events: Seq[Event]): Seq[ChatData.Update] = {
-    def getLastPost(left: Post, right: Post): Post =
-      if (left.updateDate.after(right.updateDate)) left else right
+  private def getNewUpdates(chats: Seq[Chat], posts: Seq[Post], events: Seq[Event]): Seq[(Chat, Post)] = {
+    val idPairs = events.map(event => (event.chatId, event.postId)).toSet
 
-    def getLastEvent(left: Event, right: Event): Event =
-      if (left.updateDate.after(right.updateDate)) left else right
-
-    val eventsByChat: Map[Long, Seq[Event]] = events.groupBy(_.chatId)
-
-    val lastPosts: Iterable[Post] = posts.groupBy(_.id).map { case (_, posts) =>
-      posts.reduce(getLastPost)
-    }
+    def postWasSent(chat: Chat, post: Post): Boolean = idPairs.contains((chat.id, post.id))
 
     for {
       chat <- chats
-      eventsByPostId = eventsByChat.getOrElse(chat.id, List()).groupBy(_.postId)
-      post <- lastPosts
-      relatedEvents = eventsByPostId.get(post.id)
-      if relatedEvents.nonEmpty || predicate(chat, post)
-    } yield ChatData.Update(chat, post, relatedEvents.map(_.reduce(getLastEvent).messageId))
+      post <- posts
+      if !postWasSent(chat, post) && predicate(chat, post)
+    } yield (chat, post)
   }
 
-  def getUpdates(fromDate: Date): Future[Seq[ChatData.Update]] = {
-    val threeDaysBack = DateUtils.addDays(fromDate, -3)
+  def getUpdates(fromDate: Date): Future[Seq[(Chat, Post)]] = {
+    val historyDateFrom = DateUtils.addDays(DateUtils.currentDate, -3)
 
     for {
       chats <- chatCollection.find(Document("subscription" -> true)).toFuture()
       posts <- postCollection.find(Document("updateDate" -> Document("$gt" -> fromDate))).toFuture()
-      events <- eventCollection.find(Document("updateDate" -> Document("$gt" -> threeDaysBack))).toFuture()
-    } yield getUpdates(chats, posts, events)
+      events <- eventCollection.find(Document("updateDate" -> Document("$gt" -> historyDateFrom))).toFuture()
+    } yield getNewUpdates(chats, posts, events)
   }
 
-  def updatePosts(posts: Seq[Post]): Unit =
-    posts.foreach(updatePost)
+  def updatePosts(posts: Seq[Post]): Unit = posts.foreach(updatePost)
 
-  def updatePost(post: Post): Unit =
+  def updatePost(post: Post): Unit = {
     postCollection
-      .replaceOne(Document("link" -> post.link), post, ReplaceOptions().upsert(true))
+      .replaceOne(Document("id" -> post.id), post, ReplaceOptions().upsert(true))
       .toFuture().onComplete {
-      case Success(value) => log.debug(s"update post ${post.link}: $value")
-      case Failure(exception) => log.error(s"can't update post ${post.link}: $exception")
+      case Success(value) => log.debug(s"post was updated $value")
+      case Failure(exception) => log.error(s"can't update post $post: $exception")
     }
+  }
 
-  def addEvent(event: Event): Future[Completed] =
-    eventCollection.insertOne(event).toFuture()
+  def addEvent(event: Event): Future[Completed] = eventCollection.insertOne(event).toFuture()
 }

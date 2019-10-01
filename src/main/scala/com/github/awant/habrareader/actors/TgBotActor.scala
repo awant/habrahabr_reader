@@ -28,7 +28,6 @@ object TgBotActor {
   final case class SettingsUpd(chatId: Long, text: String)
   final case class Reply(chatId: Long, msg: String)
   final case class PostReply(chatId: Long, post: Post)
-  final case class PostEdit(chatId: Long, messageId: Int, post: Post)
 }
 
 class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends Actor with ActorLogging {
@@ -46,7 +45,7 @@ class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends
     s"""author: ${post.author}
          |up votes: ${post.upVotes}
          |down votes: ${post.downVotes}
-         |*${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
+         |${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
          |${post.link}
       """.stripMargin
   }
@@ -58,10 +57,8 @@ class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends
     case Reply(chatId, msg) => bot.request(SendMessage(chatId, msg))
     case PostReply(chatId, post) =>
       bot.request(SendMessage(chatId, formMessage(post)))
-        .map(msg => PostWasSentToTg(Event( chatId, msg.messageId, post.id, post.updateDate)))
+        .map(_ => PostWasSentToTg(Event.getSendEvent(chatId, post.id, post.updateDate)))
         .pipeTo(sender)
-    case PostEdit(chatId, messageId, post) =>
-      bot.request(EditMessageText(Option(chatId), Option(messageId), text=formMessage(post)))
   }
 }
 

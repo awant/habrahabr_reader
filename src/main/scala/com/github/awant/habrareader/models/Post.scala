@@ -17,7 +17,9 @@ case class Post(id: Long,
                 viewsCount: Int,
                 commentsCount: Int,
                 bookmarksCount: Int,
-                updateDate: Date)
+                updateDate: Date) {
+  override def toString: String = s"Post[$title; $updateDate]"
+}
 
 object Post {
   implicit val encoder: Encoder[Post] = (post: Post) => {

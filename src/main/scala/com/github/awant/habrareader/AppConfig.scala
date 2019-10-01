@@ -1,11 +1,10 @@
 package com.github.awant.habrareader
 
-import com.github.awant.habrareader.utils.ConfigLoader
 import com.typesafe.config.{Config, ConfigFactory}
 import pureconfig.generic.auto._
 
-object AppConfig {
 
+object AppConfig {
   final case class AppConfig(tgbot: TgBotActorConfig,
                              shop: ShopActorConfig,
                              library: LibraryActorConfig,
