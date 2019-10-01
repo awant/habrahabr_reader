@@ -1,24 +1,31 @@
 package com.github.awant.habrareader.models
 
-import io.circe.syntax._
-import io.circe._
+import java.util.Date
 
-case class Event(id: Long, chatId: Long, postId: Long)
+import io.circe._
+import io.circe.syntax._
+import com.github.awant.habrareader.utils.DateUtils._
+
+case class Event(chatId: Long, postId: Long, updateDate: Date, status: String)
 
 object Event {
+  def getSendEvent(chatId: Long, postId: Long, updateDate: Date): Event = Event(chatId, postId, updateDate, "send")
+
   implicit val encoder: Encoder[Event] = (event: Event) => {
     Json.obj(
-      "id" -> event.id.asJson,
-      "chatId" -> event.chatId.asJson,
-      "postId" -> event.postId.asJson
+      "chatId" := event.chatId,
+      "postId" := event.postId,
+      "updateDate" := event.updateDate,
+      "status" := event.status
     )
   }
 
   implicit val decoder: Decoder[Event] = (c: HCursor) => {
     for {
-      id <- c.downField("id").as[Long]
-      chatId <- c.downField("chatId").as[Long]
-      postId <- c.downField("postId").as[Long]
-    } yield Event(id, chatId, postId)
+      chatId <- c.get[Long]("chatId")
+      postId <- c.get[Long]("postId")
+      updateDate <- c.get[Date]("updateDate")
+      status <- c.get[String]("status")
+    } yield Event(chatId, postId, updateDate, status)
   }
 }

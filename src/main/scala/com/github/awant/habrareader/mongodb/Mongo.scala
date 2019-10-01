@@ -1,22 +1,33 @@
 package com.github.awant.habrareader.mongodb
 
-import com.typesafe.config.Config
+import ch.qos.logback.classic.{Level, LoggerContext}
+import com.github.awant.habrareader.AppConfig.MongoConfig
+import com.github.awant.habrareader.models.{Chat, ChatScope, Event, Post}
 import org.bson.codecs.configuration.CodecRegistries._
-import org.mongodb.scala._
-import com.github.awant.habrareader.models.{Chat, Event, Post}
-import com.github.awant.habrareader.utils.ConfigLoader
-import com.github.awant.habrareader.{defaultMongoConfigPath, localMongoConfigPath}
 import org.bson.codecs.configuration.CodecRegistry
+import org.mongodb.scala._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
+import org.slf4j.LoggerFactory
+
+class Mongo(config: MongoConfig) {
+  if (!config.writeLogs) {
+    Mongo.disableLogs()
+  }
+
+  val mongoClient: MongoClient = MongoClient(config.uri)
+  val codecRegistry: CodecRegistry = fromRegistries(fromProviders(classOf[Chat], classOf[Post], classOf[ChatScope], classOf[Event]), DEFAULT_CODEC_REGISTRY)
+  val database: MongoDatabase = mongoClient.getDatabase(config.database).withCodecRegistry(codecRegistry)
+
+  val chatCollection: MongoCollection[Chat] = database.getCollection[Chat]("chats")
+  val postCollection: MongoCollection[Post] = database.getCollection[Post]("posts")
+  val eventCollection: MongoCollection[Event] = database.getCollection[Event]("events")
+}
 
 object Mongo {
-  lazy val config: Config = ConfigLoader.getConfig(defaultMongoConfigPath, localMongoConfigPath)
-  lazy val mongoClient: MongoClient = MongoClient(config.getString("mongo.uri"))
-  lazy val codecRegistry: CodecRegistry = fromRegistries(fromProviders(classOf[Chat]), fromProviders(classOf[Post]), DEFAULT_CODEC_REGISTRY)
-  lazy val database: MongoDatabase = mongoClient.getDatabase(config.getString("mongo.database")).withCodecRegistry(codecRegistry)
-
-  lazy val chatCollection: MongoCollection[Chat] = database.getCollection[Chat]("chats")
-  lazy val postCollection: MongoCollection[Post] = database.getCollection[Post]("posts")
-//  lazy val eventCollection: MongoCollection[Event] = database.getCollection[Event]("events")
+  def disableLogs(): Unit = {
+    val loggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
+    val rootLogger = loggerContext.getLogger("org.mongodb.driver")
+    rootLogger.setLevel(Level.OFF)
+  }
 }

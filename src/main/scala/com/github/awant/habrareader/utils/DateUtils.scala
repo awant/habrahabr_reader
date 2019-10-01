@@ -3,6 +3,9 @@ package com.github.awant.habrareader.utils
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
+import io.circe.syntax._
+import io.circe.{Decoder, Encoder}
+
 import scala.concurrent.duration.FiniteDuration
 
 
@@ -26,5 +29,22 @@ object DateUtils {
     cal.getTime
   }
 
+  def getLast(left: Date, right: Date): Date =
+    if (left.after(right))
+      left
+    else
+      right
+
+  def getMax(dates: Seq[Date]): Date = {
+    require(dates.nonEmpty)
+    var maxDate = dates.head
+    dates.tail.foreach{ date => if (date.after(maxDate)) maxDate = date }
+    maxDate
+  }
+
   def yesterday: Date = addDays(currentDate, -1)
+
+  implicit val dateEncoder: Encoder[Date] = (date: Date) => DateUtils.convertToStr(date).asJson
+
+  implicit val dateDecoder: Decoder[Date] = Decoder[String].map(DateUtils.convertToDate(_))
 }

@@ -1,54 +1,62 @@
 package com.github.awant.habrareader.models
 
-import io.circe.syntax._
-import io.circe._
 import java.util.Date
-import com.github.awant.habrareader.utils.DateUtils
 
-case class Post(link: String,
+import com.github.awant.habrareader.utils.DateUtils._
+import io.circe._
+import io.circe.syntax._
+
+case class Post(id: Long,
+                link: String,
                 title: String,
                 description: String,
                 author: String,
+                categories: Seq[String],
                 upVotes: Int,
                 downVotes: Int,
                 viewsCount: Int,
                 commentsCount: Int,
                 bookmarksCount: Int,
-                updateDate: Date)
+                updateDate: Date) {
+  override def toString: String = s"Post[$title; $updateDate]"
+}
 
 object Post {
   implicit val encoder: Encoder[Post] = (post: Post) => {
     Json.obj(
-      "link" -> post.link.asJson,
-      "title" -> post.title.asJson,
-      "description" -> post.description.asJson,
-      "author" -> post.author.asJson,
-      "upvotes" -> post.upVotes.asJson,
-      "downvotes" -> post.downVotes.asJson,
-      "views" -> post.viewsCount.asJson,
-      "comments" -> post.commentsCount.asJson,
-      "bookmarks" -> post.bookmarksCount.asJson,
-      "updateDate" -> DateUtils.convertToStr(post.updateDate).asJson
+      "id" := post.id,
+      "link" := post.link,
+      "title" := post.title,
+      "description" := post.description,
+      "author" := post.author,
+      "categories" := post.categories,
+      "upvotes" := post.upVotes,
+      "downvotes" := post.downVotes,
+      "views" := post.viewsCount,
+      "comments" := post.commentsCount,
+      "bookmarks" := post.bookmarksCount,
+      "updateDate" := post.updateDate
     )
   }
 
   implicit val decoder: Decoder[Post] = (c: HCursor) => {
     for {
-      link <- c.downField("link").as[String]
-      title <- c.downField("title").as[String]
-      description <- c.downField("description").as[String]
-      author <- c.downField("author").as[String]
-      upVotes <- c.downField("upvotes").as[Int]
-      downVotes <- c.downField("downvotes").as[Int]
-      viewsCount <- c.downField("views").as[Int]
-      commentsCount <- c.downField("comments").as[Int]
-      bookmarksCount <- c.downField("bookmarks").as[Int]
-      updateDate <- c.downField("updateDate").as[String]
+      id <- c.get[Long]("id")
+      link <- c.get[String]("link")
+      title <- c.get[String]("title")
+      description <- c.get[String]("description")
+      author <- c.get[String]("author")
+      categories <- c.get[Seq[String]]("categories")
+      upVotes <- c.get[Int]("upvotes")
+      downVotes <- c.get[Int]("downvotes")
+      viewsCount <- c.get[Int]("views")
+      commentsCount <- c.get[Int]("comments")
+      bookmarksCount <- c.get[Int]("bookmarks")
+      updateDate <- c.get[Date]("updateDate")
     } yield Post(
-      link, title, description, author, upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
-      DateUtils.convertToDate(updateDate)
+      id, link, title, description, author, categories,
+      upVotes, downVotes, viewsCount, commentsCount, bookmarksCount,
+      updateDate
     )
   }
-
-  def getTest = Post("wwww.test.com", "test title", "test description", "test author", 0, 0, 0, 0, 0, DateUtils.currentDate)
 }
