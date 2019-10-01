@@ -30,6 +30,7 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
   }
 
   def updatePosts(): Unit = {
+    log.debug("downloading new posts")
     val now = DateUtils.currentDate
 
     val habrArticles = HabrArticlesDownloader.getArticles()
@@ -48,7 +49,7 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
       bookmarksCount = article.bookmarksCount,
       updateDate = now)
     )
-    log.debug(s"update posts: ${posts.foreach(println(_))}")
+    log.debug(s"updating posts:\n${posts.mkString("\n")}")
 
     library ! LibraryActor.PostsUpdating(posts)
   }

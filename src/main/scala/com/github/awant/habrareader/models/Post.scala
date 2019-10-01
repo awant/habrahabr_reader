@@ -18,7 +18,7 @@ case class Post(id: Long,
                 commentsCount: Int,
                 bookmarksCount: Int,
                 updateDate: Date) {
-  override def toString: String = s"Post[$title]"
+  override def toString: String = s"Post[$title; $updateDate]"
 }
 
 object Post {

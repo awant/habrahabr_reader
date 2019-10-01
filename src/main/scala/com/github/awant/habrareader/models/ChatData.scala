@@ -11,14 +11,6 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-object ChatData {
-
-  case class Update(chat: Chat, post: Post, prevMessageId: Option[Int] = None) {
-    def date: Date = post.updateDate
-  }
-
-}
-
 class ChatData(chatCollection: MongoCollection[Chat],
                postCollection: MongoCollection[Post],
                eventCollection: MongoCollection[Event])(implicit ec: ExecutionContext) {

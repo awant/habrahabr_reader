@@ -45,7 +45,7 @@ class TgBotActor private(botConfig: TgBotActorConfig, library: ActorRef) extends
     s"""author: ${post.author}
          |up votes: ${post.upVotes}
          |down votes: ${post.downVotes}
-         |*${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
+         |${post.viewsCount} views, ${post.bookmarksCount} bookmarks, ${post.commentsCount} comments
          |${post.link}
       """.stripMargin
   }

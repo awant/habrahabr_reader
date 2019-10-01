@@ -36,7 +36,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
-  var lastPostUpdatedDate: Date = DateUtils.currentDate
+  var lastPostUpdatedDate: Date = DateUtils.yesterday
 
   override def preStart(): Unit = {
     context.system.scheduler.schedule(10.seconds, subscriptionReplyInterval, self, NewPostsSending)
@@ -48,7 +48,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
     case SubscriptionChanging(chatId: Long, subscribe: Boolean) =>
       chatData.updateSubscription(chatId, subscribe).onComplete {
         case Success(_) =>
-        case Failure(err) => println(err)
+        case Failure(err) => log.error(err.toString)
       }
     case SettingsChanging(chatId: Long, cmd: String) =>
       log.debug(s"settingsChanging got: $cmd")
@@ -64,7 +64,7 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
     case SettingsGetting(chatId) =>
       chatData.getChatSettings(chatId).onComplete {
         case Success(settings) => subscribedBot ! Reply(chatId, settings)
-        case Failure(_) => subscribedBot ! Reply(chatId, "Something was wrong, try again later")
+        case Failure(_) => subscribedBot ! Reply(chatId, "Can't find the chat settings. You should subscribe first")
       }
     case NewPostsSending => processNewPostSending()
     case PostsUpdating(posts) => chatData.updatePosts(posts)
@@ -77,8 +77,8 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
     chatData.getUpdates(dateFrom).onComplete {
       case Success(updates) =>
-        lastPostUpdatedDate = DateUtils.getMax(updates.map(_._2.updateDate))
         updates.foreach{case (chat, post) => subscribedBot ! PostReply(chat.id, post)}
+        lastPostUpdatedDate = DateUtils.getMax(updates.map(_._2.updateDate) :+ lastPostUpdatedDate)
       case Failure(e) => log.error(s"$e")
     }
   }
