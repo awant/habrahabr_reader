@@ -4,9 +4,8 @@ import java.util.Date
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.github.awant.habrareader.AppConfig.LibraryActorConfig
-import com.github.awant.habrareader.actors.TgBotActor.{PostEdit, PostReply, Reply}
+import com.github.awant.habrareader.actors.TgBotActor.{PostReply, Reply}
 import com.github.awant.habrareader.models
-import com.github.awant.habrareader.models.{Chat, ChatData, Event}
 import com.github.awant.habrareader.utils.{ChangeCommand, DateUtils, SettingsRequestParser}
 
 import scala.concurrent.ExecutionContextExecutor
@@ -20,7 +19,7 @@ object LibraryActor {
 
   final case class BotSubscription(subscriber: ActorRef)
 
-  final case class PostWasSentToTg(event: Event)
+  final case class PostWasSentToTg(event: models.Event)
   final case class SubscriptionChanging(chatId: Long, subscribe: Boolean)
   final case class SettingsGetting(chatId: Long)
   final case class SettingsChanging(chatId: Long, body: String)
@@ -37,10 +36,10 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
 
   // Can be extended to several subscribed bots
   var subscribedBot: ActorRef = _
-  var chatDataLastTime: Date = DateUtils.currentDate
+  var lastPostUpdatedDate: Date = DateUtils.currentDate
 
   override def preStart(): Unit = {
-    context.system.scheduler.schedule(subscriptionReplyInterval, subscriptionReplyInterval, self, NewPostsSending)
+    context.system.scheduler.schedule(10.seconds, subscriptionReplyInterval, self, NewPostsSending)
   }
 
   override def receive: Receive = {
@@ -57,8 +56,8 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
       log.debug(s"settingsChanging parsed: ${settingsCmd.toString}")
       settingsCmd.cmd match {
         case ChangeCommand.UNKNOWN => subscribedBot ! Reply(chatId, settingsCmd.err)
-        case ChangeCommand.RESET => chatData.updateChat(Chat.withDefaultSettings(chatId))
-        case ChangeCommand.CLEAR => chatData.updateChat(Chat.withEmptySettings(chatId))
+        case ChangeCommand.RESET => chatData.updateChat(models.Chat.withDefaultSettings(chatId))
+        case ChangeCommand.CLEAR => chatData.updateChat(models.Chat.withEmptySettings(chatId))
         case ChangeCommand.SET => chatData.appendSettingToChat(chatId, settingsCmd.args.head, settingsCmd.args(1))
       }
 
@@ -68,27 +67,18 @@ class LibraryActor(subscriptionReplyInterval: FiniteDuration, chatData: models.C
         case Failure(_) => subscribedBot ! Reply(chatId, "Something was wrong, try again later")
       }
     case NewPostsSending => processNewPostSending()
-    case UpdateChatDataLastTime(date) => chatDataLastTime = date
     case PostsUpdating(posts) => chatData.updatePosts(posts)
     case PostWasSentToTg(event) => chatData.addEvent(event)
   }
 
   private def processNewPostSending(): Unit = {
-    log.debug("sending new posts")
-    val currentLast = chatDataLastTime
+    log.debug("sending new posts to chats")
+    val dateFrom = lastPostUpdatedDate
 
-    chatData.getUpdates(currentLast).onComplete {
+    chatData.getUpdates(dateFrom).onComplete {
       case Success(updates) =>
-
-        val newLastDate = updates.view.map(_.date).foldLeft(currentLast)(DateUtils.getLast)
-        self ! UpdateChatDataLastTime(newLastDate)
-
-        updates.foreach {
-          case ChatData.Update(chat, post, None) =>
-            subscribedBot ! PostReply(chat.id, post)
-          case ChatData.Update(chat, post, Some(prevMessageId)) =>
-            subscribedBot ! PostEdit(chat.id, prevMessageId, post)
-        }
+        lastPostUpdatedDate = DateUtils.getMax(updates.map(_._2.updateDate))
+        updates.foreach{case (chat, post) => subscribedBot ! PostReply(chat.id, post)}
       case Failure(e) => log.error(s"$e")
     }
   }

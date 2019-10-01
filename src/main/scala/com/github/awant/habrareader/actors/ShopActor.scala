@@ -46,9 +46,9 @@ class ShopActor private(updatePostsInterval: FiniteDuration, library: ActorRef) 
       viewsCount = article.viewsCount,
       commentsCount = article.commentsCount,
       bookmarksCount = article.bookmarksCount,
-      updateDate = now))
-
-    log.debug(s"update posts: ${posts.map(_.title).mkString("[", ", ", "]")}")
+      updateDate = now)
+    )
+    log.debug(s"update posts: ${posts.foreach(println(_))}")
 
     library ! LibraryActor.PostsUpdating(posts)
   }
